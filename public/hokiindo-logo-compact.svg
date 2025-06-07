@@ -1,0 +1,19 @@
+<svg width="200" height="40" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- H Symbol -->
+  <g transform="translate(5, 5)">
+    <!-- Circle background -->
+    <circle cx="15" cy="15" r="15" fill="#DC2626"/>
+    <!-- H Shape -->
+    <path d="M8 8 L8 22 M22 8 L22 22 M8 15 L22 15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Company Name -->
+  <text x="45" y="20" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#DC2626">
+    Hokiindo Raya
+  </text>
+  
+  <!-- Tagline -->
+  <text x="45" y="32" font-family="Inter, sans-serif" font-size="8" font-weight="400" fill="#3B82F6">
+    Your Trusted Solution Partner
+  </text>
+</svg> 

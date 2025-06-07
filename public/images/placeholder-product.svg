@@ -1,0 +1,28 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc"/>
+  
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="300" fill="url(#grid)"/>
+  
+  <!-- Simple product box icon -->
+  <g transform="translate(150, 80)">
+    <!-- Box base -->
+    <rect x="0" y="40" width="100" height="80" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
+    
+    <!-- Box top -->
+    <polygon points="0,40 20,20 120,20 100,40" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
+    
+    <!-- Box side -->
+    <polygon points="100,40 120,20 120,100 100,120" fill="#94a3b8" stroke="#94a3b8" stroke-width="2"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="200" text-anchor="middle" fill="#64748b" font-family="Arial, sans-serif" font-size="14" font-weight="500">Gambar Produk</text>
+  <text x="200" y="220" text-anchor="middle" fill="#94a3b8" font-family="Arial, sans-serif" font-size="12">Tidak Tersedia</text>
+</svg> 
