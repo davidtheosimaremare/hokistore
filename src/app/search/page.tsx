@@ -53,10 +53,20 @@ interface ProductCardProps {
   getWhatsAppLink: (product: SupabaseProduct) => string;
 }
 
-const SearchPageContent = () => {
+// Component to handle search params logic
+function SearchParamsHandler({ setQuery }: { setQuery: (query: string) => void }) {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const query = searchParams.get('query') || '';
+
+  useEffect(() => {
+    setQuery(query);
+  }, [query, setQuery]);
+
+  return null;
+}
+
+const SearchPageContent = ({ query }: { query: string }) => {
+  const router = useRouter();
   
   const [products, setProducts] = useState<SupabaseProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<SupabaseProduct[]>([]);
@@ -590,6 +600,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
   );
 };
 
+// Wrapper component to manage state
+const SearchPageWrapper = () => {
+  const [query, setQuery] = useState('');
+
+  return (
+    <>
+      <Suspense fallback={null}>
+        <SearchParamsHandler setQuery={setQuery} />
+      </Suspense>
+      <SearchPageContent query={query} />
+    </>
+  );
+};
+
 const SearchPage = () => {
   return (
     <Suspense fallback={
@@ -604,7 +628,7 @@ const SearchPage = () => {
         <Footer />
       </div>
     }>
-      <SearchPageContent />
+      <SearchPageWrapper />
     </Suspense>
   );
 };

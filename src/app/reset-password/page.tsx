@@ -1,23 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Lock, AlertCircle, CheckCircle, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-export default function ResetPasswordPage() {
-  const router = useRouter();
+// Component to handle search params logic
+function ResetPasswordHandler({ setMessage }: { setMessage: (message: { type: 'error' | 'success', text: string } | null) => void }) {
   const searchParams = useSearchParams();
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
     // Check if we have the necessary parameters for password reset
@@ -30,7 +21,22 @@ export default function ResetPasswordPage() {
         text: errorDescription || 'Link reset password tidak valid atau sudah kedaluwarsa.' 
       });
     }
-  }, [searchParams]);
+  }, [searchParams, setMessage]);
+
+  return null;
+}
+
+export default function ResetPasswordPage() {
+  const router = useRouter();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [countdown, setCountdown] = useState(3);
 
   const validatePasswords = () => {
     const newErrors: {[key: string]: string} = {};
@@ -107,6 +113,11 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {/* Search params handler wrapped in Suspense */}
+      <Suspense fallback={null}>
+        <ResetPasswordHandler setMessage={setMessage} />
+      </Suspense>
+      
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-110 animate-ken-burns"

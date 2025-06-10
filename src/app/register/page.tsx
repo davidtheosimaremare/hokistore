@@ -97,7 +97,7 @@ const LanguageSwitcher = () => {
   );
 };
 
-export default function RegisterPage() {
+function RegisterPageContent() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -342,6 +342,14 @@ export default function RegisterPage() {
           </CardContent>
         </Card>
       </div>
+    </LanguageProvider>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <LanguageProvider>
+      <RegisterPageContent />
     </LanguageProvider>
   );
 } 

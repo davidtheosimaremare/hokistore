@@ -770,9 +770,13 @@ export default function Home() {
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img 
-                  src="https://placehold.co/600x700/f3f4f6/9ca3af?text=Hokiindo+Office"
+                  src="/images/asset-web/about-4.png"
                   alt="Hokiindo Raya Office"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://placehold.co/600x700/f3f4f6/9ca3af?text=Hokiindo+Office";
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
               </div>
@@ -871,10 +875,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Project Reference Section */}
+      {/* Project Reference Section - HIDDEN */}
       <section 
         ref={projectsRef}
-        className="w-full py-20 projects-bg bg-gray-100 relative overflow-hidden"
+        className="hidden w-full py-20 projects-bg bg-gray-100 relative overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
@@ -1299,8 +1303,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Siemens Award Banner Section */}
-      <section className="w-full py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
+      {/* Siemens Award Banner Section - HIDDEN */}
+      <section className="hidden w-full py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
         {/* Background Patterns */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 right-10 w-40 h-40 bg-yellow-400 rounded-full blur-3xl"></div>

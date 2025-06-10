@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { 
   Filter, 
@@ -29,7 +29,19 @@ type ViewMode = 'grid' | 'list';
 
 const PRODUCTS_PER_PAGE = 14; // Products per page as requested
 
-const ProductsPage = () => {
+// Component to handle search params logic
+function SearchParamsHandler({ setSearchQuery }: { setSearchQuery: (query: string) => void }) {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
+
+  useEffect(() => {
+    setSearchQuery(searchQuery);
+  }, [searchQuery, setSearchQuery]);
+
+  return null;
+}
+
+const ProductsPageContent = () => {
   const {
     products,
     categories,
@@ -42,9 +54,7 @@ const ProductsPage = () => {
   } = useSupabaseProducts();
 
   const { lang } = useLang();
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get('q') || '';
-
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
@@ -167,6 +177,9 @@ ${product.stock_quantity <= 0 ? 'Mohon informasi untuk stock dan waktu pengirima
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Suspense fallback={null}>
+        <SearchParamsHandler setSearchQuery={setSearchQuery} />
+      </Suspense>
       <Header />
       
       {/* Banner Slider */}
@@ -180,31 +193,34 @@ ${product.stock_quantity <= 0 ? 'Mohon informasi untuk stock dan waktu pengirima
               >
                 {/* Slide 1 */}
                 <div className="w-full flex-shrink-0">
-                  <div className="relative h-32 sm:h-40 md:h-48 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <h3 className="text-lg sm:text-xl font-bold mb-2">Banner Promosi 1</h3>
-                      <p className="text-sm opacity-90">Placeholder untuk banner pertama</p>
-                    </div>
+                  <div className="relative h-32 sm:h-40 md:h-48 lg:h-56 rounded-xl overflow-hidden">
+                    <img
+                      src="/images/asset-web/product-banner-1.png"
+                      alt="Product Banner 1"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
                 
                 {/* Slide 2 */}
                 <div className="w-full flex-shrink-0">
-                  <div className="relative h-32 sm:h-40 md:h-48 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <h3 className="text-lg sm:text-xl font-bold mb-2">Banner Promosi 2</h3>
-                      <p className="text-sm opacity-90">Placeholder untuk banner kedua</p>
-                    </div>
+                  <div className="relative h-32 sm:h-40 md:h-48 lg:h-56 rounded-xl overflow-hidden">
+                    <img
+                      src="/images/asset-web/product-banner-2.png"
+                      alt="Product Banner 2"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
                 
                 {/* Slide 3 */}
                 <div className="w-full flex-shrink-0">
-                  <div className="relative h-32 sm:h-40 md:h-48 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <h3 className="text-lg sm:text-xl font-bold mb-2">Banner Promosi 3</h3>
-                      <p className="text-sm opacity-90">Placeholder untuk banner ketiga</p>
-                    </div>
+                  <div className="relative h-32 sm:h-40 md:h-48 lg:h-56 rounded-xl overflow-hidden">
+                    <img
+                      src="/images/asset-web/product-banner-3.png"
+                      alt="Product Banner 3"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               </div>
@@ -548,7 +564,7 @@ ${product.stock_quantity <= 0 ? 'Mohon informasi untuk stock dan waktu pengirima
                   {visibleProducts.map((product) => (
                     <Link 
                       key={product.id} 
-                                                href={generateSEOProductUrl(product.id, getDisplayName(product))}
+                      href={generateSEOProductUrl(product.id, getDisplayName(product))}
                       className={`bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer ${
                         viewMode === 'list' ? 'flex flex-row' : 'flex flex-col'
                       }`}
@@ -649,6 +665,11 @@ ${product.stock_quantity <= 0 ? 'Mohon informasi untuk stock dan waktu pengirima
       <Footer />
     </div>
   );
+};
+
+// Main component wrapper with Suspense
+const ProductsPage = () => {
+  return <ProductsPageContent />;
 };
 
 export default ProductsPage;

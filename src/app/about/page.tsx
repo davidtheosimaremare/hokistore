@@ -11,7 +11,13 @@ import {
   Calendar,
   MapPin,
   Phone,
-  Mail
+  Mail,
+  Building,
+  TrendingUp,
+  Rocket,
+  Handshake,
+  Trophy,
+  Sparkles
 } from "lucide-react";
 
 export default function AboutPage() {
@@ -36,41 +42,47 @@ export default function AboutPage() {
 
   const stats = [
     { icon: Users, value: "500+", label: "Happy Clients" },
-    { icon: Award, value: "15+", label: "Years Experience" },
+    { icon: Award, value: "12+", label: "Years Experience" },
     { icon: Globe, value: "50+", label: "Cities Served" },
     { icon: Zap, value: "1000+", label: "Projects Completed" }
   ];
 
   const timeline = [
     {
-      year: "2008",
+      year: "2013",
       title: "Company Founded",
-      description: "Hokiindo Raya was established with a vision to provide premium electrical solutions for industrial needs."
-    },
-    {
-      year: "2012",
-      title: "Siemens Partnership",
-      description: "Became an official distributor of Siemens industrial automation products in Indonesia."
+      description: "PT. Hokiindo Raya was established as a trusted provider of electrical infrastructure solutions for various industrial sectors.",
+      icon: Building
     },
     {
       year: "2015",
-      title: "G-Comin Collaboration",
-      description: "Expanded partnerships to include G-Comin electrical components and solutions."
+      title: "Business Expansion",
+      description: "Expanded operations nationwide serving industrial, commercial, and utility-scale applications with comprehensive electrical solutions.",
+      icon: TrendingUp
     },
     {
       year: "2018",
-      title: "Digital Transformation",
-      description: "Launched our digital platform to serve customers with modern e-commerce solutions."
+      title: "Digital Innovation",
+      description: "Launched integrated online and offline purchasing systems for retail to large project procurement with professional customer service.",
+      icon: Rocket
     },
     {
-      year: "2021",
-      title: "Industry Recognition",
-      description: "Received multiple certifications and awards for excellence in industrial automation."
+      year: "2023",
+      title: "Siemens Official Partnership",
+      description: "Appointed as official partner of Siemens Smart Infrastructure Electrical Products (SI EP) since July 1, 2023.",
+      icon: Handshake
     },
     {
       year: "2024",
-      title: "Innovation Hub",
-      description: "Established innovation center for smart industrial solutions and IoT integration."
+      title: "G-Coming Partnership",
+      description: "Became G-Coming official partner, collaborating with Shenzhen Coming Technology for international standard lighting solutions.",
+      icon: Trophy
+    },
+    {
+      year: "2024",
+      title: "Leading Innovation",
+      description: "Continuing to lead in electrical infrastructure with sustainable, efficient, and reliable solutions for Indonesia's development.",
+      icon: Sparkles
     }
   ];
 
@@ -102,30 +114,72 @@ export default function AboutPage() {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-red-600 to-red-700 text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <img
-          src="https://images.unsplash.com/photo-1581091878368-de3e48b79efc?w=1600&h=800&fit=crop"
-          alt="Industrial Facility"
-          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
-        />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              About Hokiindo Raya
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/asset-web/about-1.png"
+            alt="PT. Hokiindo Raya - Electrical Infrastructure Solutions"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-red-900/80"></div>
+        </div>
+        
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="max-w-4xl mx-auto">
+            {/* Subtitle */}
+            <div className="inline-flex items-center gap-2 bg-red-600/20 backdrop-blur-sm border border-red-500/30 rounded-full px-6 py-3 mb-8">
+              <Award className="w-5 h-5 text-red-400" />
+              <span className="text-red-300 font-semibold">Since 2013 • Trusted Partner</span>
+            </div>
+            
+            {/* Main Title */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              <span className="block">About</span>
+              <span className="block bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
+                Hokiindo Raya
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl text-red-100 max-w-4xl mx-auto mb-8">
-              Your Trusted Solution Partner in Industrial Automation & Electrical Engineering
+            
+            {/* Description */}
+            <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-12 leading-relaxed">
+              Leading provider of <span className="text-red-400 font-semibold">electrical infrastructure solutions</span> 
+              and <span className="text-red-400 font-semibold">industrial automation</span> serving Indonesia 
+              with international quality standards
             </p>
-            <div className="flex flex-wrap justify-center gap-8 mt-12">
+            
+            {/* Partnership Badges */}
+            <div className="flex flex-wrap justify-center gap-6 mb-16">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4">
+                <div className="text-sm text-gray-300 mb-1">Official Partner Since 2023</div>
+                <div className="text-lg font-bold text-white">Siemens SI EP</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4">
+                <div className="text-sm text-gray-300 mb-1">Partner Since 2024</div>
+                <div className="text-lg font-bold text-white">G-Coming Technology</div>
+              </div>
+            </div>
+            
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <stat.icon className="w-8 h-8 mx-auto mb-2 text-red-200" />
-                  <div className="text-3xl font-bold">{stat.value}</div>
-                  <div className="text-red-100">{stat.label}</div>
+                <div key={index} className="text-center group">
+                  <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300">
+                    <stat.icon className="w-10 h-10 mx-auto mb-4 text-red-400 group-hover:scale-110 transition-transform duration-300" />
+                    <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.value}</div>
+                    <div className="text-gray-300 text-sm md:text-base">{stat.label}</div>
+                  </div>
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
           </div>
         </div>
       </section>
@@ -139,28 +193,23 @@ export default function AboutPage() {
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
               <p className="text-lg text-gray-600 mb-6">
-                Founded in 2008, Hokiindo Raya began as a small electrical solutions provider with a big vision: 
-                to become Indonesia's leading distributor of premium industrial automation equipment.
+                PT. Hokiindo Raya established in 2013 and has been operating for more than 12 years as a trusted provider of electrical infrastructure, serving various industrial sectors with innovative and high-quality solutions.
               </p>
               <p className="text-lg text-gray-600 mb-6">
-                Over the years, we have grown from a local supplier to a trusted nationwide partner, 
-                serving hundreds of industrial clients across Indonesia. Our commitment to quality, 
-                innovation, and customer satisfaction has made us the preferred choice for businesses 
-                seeking reliable electrical solutions.
+                As an Authorized Partner of Siemens and Shenzhen Coming Technology, PT. Hokiindo Raya presents international standard, high-performance, and durable electrical products to support critical infrastructure.
               </p>
               <p className="text-lg text-gray-600">
-                Today, we proudly serve as an official distributor for world-renowned brands like 
-                Siemens and G-Comin, bringing cutting-edge technology and expertise to Indonesian industries.
+                Supported by certified experts and industry standard-based employees, PT. Hokiindo Raya ensures that every project runs efficiently, safely, and according to customer technical needs.
               </p>
             </div>
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop"
+                src="/images/asset-web/about-5.png"
                 alt="Our Team"
                 className="rounded-2xl shadow-2xl"
               />
               <div className="absolute -bottom-6 -right-6 bg-red-600 text-white p-6 rounded-xl shadow-lg">
-                <div className="text-2xl font-bold">15+</div>
+                <div className="text-2xl font-bold">12+</div>
                 <div className="text-sm">Years of Excellence</div>
               </div>
             </div>
@@ -173,18 +222,16 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="p-8 md:p-12 bg-gradient-to-br from-red-50 to-red-100">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Mission</h3>
-                <p className="text-gray-700 leading-relaxed">
-                  To provide innovative, reliable, and cost-effective electrical solutions that empower 
-                  Indonesian industries to achieve operational excellence and sustainable growth through 
-                  cutting-edge automation technology.
-                </p>
+                <div className="text-gray-700 leading-relaxed space-y-2">
+                  <p>1. Provide the best quality products with environmentally friendly and sustainable standards</p>
+                  <p>2. Build strong strategic partnerships</p>
+                  <p>3. Provide professional distribution services through an integrated management system</p>
+                </div>
               </div>
               <div className="p-8 md:p-12 bg-gradient-to-br from-blue-50 to-blue-100">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Vision</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  To be the leading industrial automation solutions provider in Southeast Asia, 
-                  recognized for our technical expertise, customer-centric approach, and contribution 
-                  to industrial innovation and digital transformation.
+                  To become a leading electrical equipment distributor in Indonesia that is trusted and superior in presenting quality products from international brands, to support the development of reliable, efficient, and sustainable electrical infrastructure.
                 </p>
               </div>
             </div>
@@ -258,44 +305,83 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Partnerships */}
+        {/* Primary Business */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Partners</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Primary Business</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Trusted partnerships with world-leading brands and technology providers
+              Three main business divisions providing comprehensive electrical solutions
             </p>
           </div>
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-12">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-              <div className="text-center">
-                <div className="bg-blue-100 rounded-xl p-8 mb-4">
-                  <h3 className="text-2xl font-bold text-blue-800">SIEMENS</h3>
-                  <p className="text-blue-600 mt-2">Official Distributor</p>
+          
+          <div className="space-y-8">
+            {/* Siemens Partnership */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-12">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className="bg-blue-100 text-blue-600 rounded-full px-4 py-2 mb-4 inline-block">
+                    <span className="text-sm font-semibold uppercase tracking-wider">Since July 1, 2023</span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4">Siemens Authorized Partner</h3>
+                  <h4 className="text-xl font-semibold text-blue-600 mb-4">Smart Infrastructure, Electrical Product (SI EP)</h4>
+                  <p className="text-gray-600 leading-relaxed mb-6">
+                    The innovative technologies we develop are fundamentally revolutionizing digital infrastructure at incredible speed and scale. By delivering an integrated collaborative ecosystem, we enable organizations to accelerate their digital transformation effectively, efficiently, and sustainably.
+                  </p>
+                  <p className="text-gray-600">
+                    PT. Hokiindo Raya has been appointed as an official partner of Siemens SI EP since July 1, 2023.
+                  </p>
                 </div>
-                <p className="text-gray-600">
-                  Leading global technology company focusing on industry, infrastructure, transport, and healthcare.
-                </p>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-8 text-center">
+                  <h3 className="text-3xl font-bold text-blue-800 mb-2">SIEMENS</h3>
+                  <p className="text-blue-600 text-lg font-semibold">Smart Infrastructure</p>
+                  <p className="text-blue-600">Electrical Products</p>
+                </div>
               </div>
-              
-              <div className="text-center">
-                <div className="bg-green-100 rounded-xl p-8 mb-4">
-                  <h3 className="text-2xl font-bold text-green-800">G-COMIN</h3>
-                  <p className="text-green-600 mt-2">Authorized Partner</p>
+            </div>
+
+            {/* G-Coming Partnership */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-12">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="order-2 lg:order-1">
+                  <div className="bg-green-100 text-green-600 rounded-full px-4 py-2 mb-4 inline-block">
+                    <span className="text-sm font-semibold uppercase tracking-wider">Since 2024</span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4">G-Coming Authorized Partner</h3>
+                  <p className="text-gray-600 leading-relaxed mb-6">
+                    PT. Hokiindo Raya has been appointed as G-Coming official partner since 2024. We cooperate with Shenzhen Coming Technology as an international standard lighting solutions supplier. All products have the highest quality which is very suitable for LED Industrial and Portable lightning products.
+                  </p>
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-gray-900">Products:</h4>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                      <span>• AutoGo series</span>
+                      <span>• LiteGo series</span>
+                      <span>• MateGo series</span>
+                      <span>• TopGo series</span>
+                      <span>• Pocket Light</span>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-gray-600">
-                  Innovative electrical components and automation solutions for modern industrial applications.
-                </p>
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-8 text-center order-1 lg:order-2">
+                  <h3 className="text-3xl font-bold text-green-800 mb-2">G-COMING</h3>
+                  <p className="text-green-600 text-lg font-semibold">Lighting Solutions</p>
+                  <p className="text-green-600">LED Industrial & Portable</p>
+                </div>
               </div>
-              
+            </div>
+
+            {/* Electrical Components */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-12">
               <div className="text-center">
-                <div className="bg-red-100 rounded-xl p-8 mb-4">
-                  <h3 className="text-2xl font-bold text-red-800">ISO</h3>
-                  <p className="text-red-600 mt-2">Certified Quality</p>
-                </div>
-                <p className="text-gray-600">
-                  International standards certification ensuring quality management and customer satisfaction.
+                <h3 className="text-3xl font-bold text-gray-900 mb-4">Electrical Parts and Component Supply</h3>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  We provide a comprehensive range of high-quality electrical parts and components to support various industrial, commercial, and utility-scale applications.
                 </p>
+                <div className="mt-8 bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-8">
+                  <h4 className="text-xl font-bold text-red-800 mb-4">Complete Solutions</h4>
+                  <p className="text-red-600">
+                    From retail to large project procurement with transparent process and professional customer service support, offering both online and offline purchasing systems.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
