@@ -138,7 +138,7 @@ export const productsService = {
     }
 
     if (filters?.search) {
-      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+      query = query.or(`name.ilike.%${filters.search}%,category.ilike.%${filters.search}%`);
     }
 
     if (filters?.in_stock !== undefined) {

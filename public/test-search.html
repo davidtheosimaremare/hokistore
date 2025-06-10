@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Search - Hokistore</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #DC2626;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+        }
+        button {
+            background: #DC2626;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #B91C1C; }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #059669; }
+        .error { color: #DC2626; }
+        .info { color: #0891B2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Fitur Pencarian Hokistore</h1>
+        
+        <div class="test-section">
+            <h3>Test Search API</h3>
+            <button onclick="testSearch('SIMATIC')">Search "SIMATIC"</button>
+            <button onclick="testSearch('CPU')">Search "CPU"</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function testSearch(keyword) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `Searching for "${keyword}"...\n`;
+            
+            try {
+                const response = await fetch(`/api/test-search?q=${keyword}`);
+                const data = await response.json();
+                
+                if (data.success && data.searchResults) {
+                    resultsDiv.innerHTML += `Found ${data.searchResults.length} products:\n`;
+                    data.searchResults.forEach((product, i) => {
+                        resultsDiv.innerHTML += `${i+1}. ${product.name} - ${product.category} - Rp ${product.price.toLocaleString()}\n`;
+                    });
+                } else {
+                    resultsDiv.innerHTML += `Error: ${data.error || 'No results'}\n`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `Error: ${error.message}\n`;
+            }
+        }
+    </script>
+</body>
+</html> 

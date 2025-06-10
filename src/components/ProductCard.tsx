@@ -6,6 +6,7 @@ import { ShoppingCart, MessageCircle, Trash2 } from 'lucide-react';
 import { AccurateProduct } from '@/services/accurateApi';
 import { formatRupiah } from '@/utils/formatters';
 import { useLang } from '@/context/LangContext';
+import { generateSEOProductUrl } from '@/utils/seoHelpers';
 
 interface ProductCardProps {
   product: AccurateProduct;
@@ -46,7 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {/* Product Details */}
           <div className="flex-1 min-w-0">
             <Link 
-              href={`/product/${product.id}`}
+              href={generateSEOProductUrl(product.id, product.name)}
               className="block hover:text-red-600 transition-colors"
             >
               <h3 className="font-medium text-gray-900 text-sm line-clamp-1">{product.name}</h3>
@@ -87,7 +88,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 )}
                 
                 <Link
-                  href={`/product/${product.id}`}
+                  href={generateSEOProductUrl(product.id, product.name)}
                   className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md hover:bg-gray-200 transition-colors text-xs font-medium"
                 >
                   {lang.products.viewDetails}
@@ -120,7 +121,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       
       <div className="p-3">
         <Link 
-          href={`/product/${product.id}`}
+          href={generateSEOProductUrl(product.id, product.name)}
           className="block hover:text-red-600 transition-colors"
         >
           <h3 className="font-medium text-gray-900 text-sm line-clamp-2 mb-2 leading-tight">
@@ -166,7 +167,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
           
           <Link
-            href={`/product/${product.id}`}
+            href={generateSEOProductUrl(product.id, product.name)}
             className="w-full bg-gray-100 text-gray-700 py-2 rounded-md hover:bg-gray-200 transition-colors text-sm font-medium text-center block"
           >
             {lang.products.viewDetails}

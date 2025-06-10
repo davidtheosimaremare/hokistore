@@ -1,67 +1,53 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useState, useEffect } from 'react'
+import AdminLayout from '@/components/admin/AdminLayout'
 import { 
-  Card, 
-  CardBody, 
-  CardHeader,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
-  Chip,
-  Progress
-} from '@nextui-org/react'
-import { 
+  DollarSign, 
   Package, 
   ShoppingCart, 
   Users, 
   TrendingUp,
+  AlertTriangle,
   Clock,
-  DollarSign,
-  Eye,
-  ArrowUpRight,
-  ArrowDownRight
+  CheckCircle
 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 interface DashboardStats {
   totalProducts: number
-  totalOrders: number
-  totalUsers: number
-  totalRevenue: number
-  productChange: number
-  orderChange: number
-  userChange: number
-  revenueChange: number
+  activeProducts: number
+  lowStockProducts: number
+  totalCategories: number
+  lastSyncDate: string | null
+  totalValue: number
 }
 
-interface RecentOrder {
+interface RecentProduct {
   id: string
-  customer_name: string
-  product_name: string
-  amount: number
+  name: string
+  price: number
+  stock_quantity: number
+  category: string
   status: string
   created_at: string
 }
 
+interface SyncLog {
+  id: string
+  sync_type: string
+  status: string
+  records_processed: number
+  records_created: number
+  records_updated: number
+  started_at: string
+}
+
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalProducts: 0,
-    totalOrders: 0,
-    totalUsers: 0,
-    totalRevenue: 0,
-    productChange: 0,
-    orderChange: 0,
-    userChange: 0,
-    revenueChange: 0
-  })
-  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([])
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [recentProducts, setRecentProducts] = useState<RecentProduct[]>([])
+  const [recentSyncs, setRecentSyncs] = useState<SyncLog[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient()
 
   useEffect(() => {
     loadDashboardData()
@@ -69,47 +55,62 @@ export default function AdminDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Load products count
-      const { count: productsCount } = await supabase
+      setLoading(true)
+
+      // Load products stats
+      const { data: products, error: productsError } = await supabase
         .from('products')
-        .select('*', { count: 'exact', head: true })
-
-      // Load orders count  
-      const { count: ordersCount } = await supabase
-        .from('orders')
-        .select('*', { count: 'exact', head: true })
-
-      // Load users count
-      const { count: usersCount } = await supabase
-        .from('users')
-        .select('*', { count: 'exact', head: true })
-
-      // Load recent orders
-      const { data: orders } = await supabase
-        .from('orders')
-        .select(`
-          id,
-          customer_name,
-          product_name,
-          amount,
-          status,
-          created_at
-        `)
+        .select('id, name, price, stock_quantity, category, status, created_at')
         .order('created_at', { ascending: false })
+
+      if (productsError) {
+        console.error('Error loading products:', productsError)
+        return
+      }
+
+      // Load categories count
+      const { data: categories, error: categoriesError } = await supabase
+        .from('categories')
+        .select('id')
+
+      if (categoriesError) {
+        console.error('Error loading categories:', categoriesError)
+      }
+
+      // Load recent sync logs
+      const { data: syncLogs, error: syncError } = await supabase
+        .from('accurate_sync_logs')
+        .select('*')
+        .order('started_at', { ascending: false })
         .limit(5)
 
-      setStats({
-        totalProducts: productsCount || 0,
-        totalOrders: ordersCount || 0,
-        totalUsers: usersCount || 0,
-        totalRevenue: 0, // Calculate from orders
-        productChange: 12.5,
-        orderChange: 8.3,
-        userChange: 15.2,
-        revenueChange: 23.1
-      })
+      if (syncError) {
+        console.error('Error loading sync logs:', syncError)
+      }
 
-      setRecentOrders(orders || [])
+      // Calculate stats
+      if (products) {
+        const activeProducts = products.filter(p => p.status === 'active').length
+        const lowStockProducts = products.filter(p => p.stock_quantity <= 5).length
+        const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock_quantity), 0)
+        const lastSync = syncLogs && syncLogs.length > 0 ? syncLogs[0].started_at : null
+
+        setStats({
+          totalProducts: products.length,
+          activeProducts,
+          lowStockProducts,
+          totalCategories: categories?.length || 0,
+          lastSyncDate: lastSync,
+          totalValue
+        })
+
+        setRecentProducts(products.slice(0, 5))
+      }
+
+      if (syncLogs) {
+        setRecentSyncs(syncLogs)
+      }
+
     } catch (error) {
       console.error('Error loading dashboard data:', error)
     } finally {
@@ -120,221 +121,225 @@ export default function AdminDashboard() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
-      currency: 'IDR'
+      currency: 'IDR',
+      minimumFractionDigits: 0
     }).format(amount)
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return 'success'
-      case 'pending':
-        return 'warning'
-      case 'cancelled':
-        return 'danger'
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  const getStatusBadge = (status: string) => {
+    const statusColors = {
+      active: 'bg-green-100 text-green-800',
+      inactive: 'bg-gray-100 text-gray-800',
+      out_of_stock: 'bg-red-100 text-red-800',
+      discontinued: 'bg-yellow-100 text-yellow-800'
+    }
+    return statusColors[status as keyof typeof statusColors] || 'bg-gray-100 text-gray-800'
+  }
+
+  const getSyncStatusIcon = (status: string) => {
+    switch (status) {
+      case 'success':
+        return <CheckCircle className="w-4 h-4 text-green-500" />
+      case 'error':
+        return <AlertTriangle className="w-4 h-4 text-red-500" />
+      case 'warning':
+        return <AlertTriangle className="w-4 h-4 text-yellow-500" />
       default:
-        return 'default'
+        return <Clock className="w-4 h-4 text-gray-500" />
     }
   }
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardBody className="p-6">
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-8 bg-gray-200 rounded w-1/2"></div>
-              </CardBody>
-            </Card>
-          ))}
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
         </div>
-      </div>
+      </AdminLayout>
     )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-0 shadow-md">
-          <CardBody className="p-6">
+    <AdminLayout>
+      <div className="space-y-4">
+        {/* Header */}
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600 text-sm">Overview sistem manajemen Hokiindo Raya</p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Produk</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalProducts}</p>
-                <div className="flex items-center mt-2">
-                  <ArrowUpRight className="w-4 h-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">{stats.productChange}%</span>
-                </div>
+                <p className="text-sm font-medium text-gray-600">Total Products</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.totalProducts || 0}</p>
+                <p className="text-sm text-green-600 flex items-center mt-1">
+                  <TrendingUp className="w-4 h-4 mr-1" />
+                  {stats?.activeProducts || 0} active
+                </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-3 bg-blue-100 rounded-full">
+                <Package className="w-6 h-6 text-blue-600" />
               </div>
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card className="border-0 shadow-md">
-          <CardBody className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Transaksi</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalOrders}</p>
-                <div className="flex items-center mt-2">
-                  <ArrowUpRight className="w-4 h-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">{stats.orderChange}%</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-green-600 dark:text-green-400" />
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card className="border-0 shadow-md">
-          <CardBody className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Pengguna</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalUsers}</p>
-                <div className="flex items-center mt-2">
-                  <ArrowUpRight className="w-4 h-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">{stats.userChange}%</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-
-        <Card className="border-0 shadow-md">
-          <CardBody className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Pendapatan</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats.totalRevenue)}</p>
-                <div className="flex items-center mt-2">
-                  <ArrowUpRight className="w-4 h-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">{stats.revenueChange}%</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders */}
-        <Card className="border-0 shadow-md">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Transaksi Terbaru</h3>
-              <Button size="sm" variant="ghost" endContent={<Eye className="w-4 h-4" />}>
-                Lihat Semua
-              </Button>
-            </div>
-          </CardHeader>
-          <CardBody>
-            <Table aria-label="Recent orders" removeWrapper>
-              <TableHeader>
-                <TableColumn>Pelanggan</TableColumn>
-                <TableColumn>Produk</TableColumn>
-                <TableColumn>Jumlah</TableColumn>
-                <TableColumn>Status</TableColumn>
-              </TableHeader>
-              <TableBody emptyContent="Belum ada transaksi">
-                {recentOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>{order.customer_name}</TableCell>
-                    <TableCell>{order.product_name}</TableCell>
-                    <TableCell>{formatCurrency(order.amount)}</TableCell>
-                    <TableCell>
-                      <Chip 
-                        color={getStatusColor(order.status)} 
-                        size="sm"
-                        className="capitalize"
-                      >
-                        {order.status}
-                      </Chip>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardBody>
-        </Card>
-
-        {/* Quick Actions */}
-        <Card className="border-0 shadow-md">
-          <CardHeader className="pb-3">
-            <h3 className="text-lg font-semibold">Aksi Cepat</h3>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <Button 
-              color="primary" 
-              className="w-full justify-start" 
-              startContent={<Package className="w-4 h-4" />}
-            >
-              Tambah Produk Baru
-            </Button>
-            <Button 
-              color="secondary" 
-              variant="bordered"
-              className="w-full justify-start" 
-              startContent={<TrendingUp className="w-4 h-4" />}
-            >
-              Sinkron Data Accurate
-            </Button>
-            <Button 
-              color="success" 
-              variant="bordered"
-              className="w-full justify-start" 
-              startContent={<Users className="w-4 h-4" />}
-            >
-              Kelola Pengguna
-            </Button>
-            <Button 
-              color="warning" 
-              variant="bordered"
-              className="w-full justify-start" 
-              startContent={<Clock className="w-4 h-4" />}
-            >
-              Lihat Laporan
-            </Button>
-          </CardBody>
-        </Card>
-      </div>
-
-      {/* Activity Overview */}
-      <Card className="border-0 shadow-md">
-        <CardHeader>
-          <h3 className="text-lg font-semibold">Aktivitas Sistem</h3>
-        </CardHeader>
-        <CardBody>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Sinkronisasi Produk</span>
-              <Progress value={85} className="w-1/2" color="primary" size="sm" />
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Backup Database</span>
-              <Progress value={100} className="w-1/2" color="success" size="sm" />
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Pembaruan Stok</span>
-              <Progress value={60} className="w-1/2" color="warning" size="sm" />
             </div>
           </div>
-        </CardBody>
-      </Card>
-    </div>
+
+          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Value</p>
+                <p className="text-xl font-bold text-gray-900">{formatCurrency(stats?.totalValue || 0)}</p>
+                <p className="text-sm text-blue-600 flex items-center mt-1">
+                  <DollarSign className="w-4 h-4 mr-1" />
+                  Inventory value
+                </p>
+              </div>
+              <div className="p-3 bg-green-100 rounded-full">
+                <DollarSign className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Low Stock</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.lowStockProducts || 0}</p>
+                <p className="text-sm text-red-600 flex items-center mt-1">
+                  <AlertTriangle className="w-4 h-4 mr-1" />
+                  Need attention
+                </p>
+              </div>
+              <div className="p-3 bg-red-100 rounded-full">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Categories</p>
+                <p className="text-2xl font-bold text-gray-900">{stats?.totalCategories || 0}</p>
+                <p className="text-sm text-purple-600 flex items-center mt-1">
+                  <Users className="w-4 h-4 mr-1" />
+                  Product types
+                </p>
+              </div>
+              <div className="p-3 bg-purple-100 rounded-full">
+                <Users className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Recent Products */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="p-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Recent Products</h2>
+              <p className="text-sm text-gray-600">Latest products added to inventory</p>
+            </div>
+            <div className="p-4">
+              {recentProducts.length > 0 ? (
+                <div className="space-y-3">
+                  {recentProducts.map((product) => (
+                    <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {product.name}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {product.category} • Stock: {product.stock_quantity}
+                        </p>
+                        <p className="text-sm font-medium text-blue-600">
+                          {formatCurrency(product.price)}
+                        </p>
+                      </div>
+                      <div className="ml-4 flex-shrink-0">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(product.status)}`}>
+                          {product.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-500 py-4">No products found</p>
+              )}
+            </div>
+          </div>
+
+          {/* Recent Syncs */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="p-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Sync History</h2>
+              <p className="text-sm text-gray-600">Recent Accurate synchronizations</p>
+            </div>
+            <div className="p-4">
+              {recentSyncs.length > 0 ? (
+                <div className="space-y-3">
+                  {recentSyncs.map((sync) => (
+                    <div key={sync.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        {getSyncStatusIcon(sync.status)}
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {sync.sync_type} Sync
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {formatDate(sync.started_at)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-900">
+                          {sync.records_processed} records
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {sync.records_created} created, {sync.records_updated} updated
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-500 py-4">No sync history found</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Last Sync Info */}
+        {stats?.lastSyncDate && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center space-x-2">
+              <Clock className="w-5 h-5 text-blue-600" />
+              <div>
+                <p className="text-sm font-medium text-blue-900">
+                  Last sync: {formatDate(stats.lastSyncDate)}
+                </p>
+                <p className="text-sm text-blue-700">
+                  Data is synchronized with Accurate system
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </AdminLayout>
   )
 } 

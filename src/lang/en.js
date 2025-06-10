@@ -8,7 +8,10 @@ export default {
     about: "About",
     contact: "Contact",
     categories: "Product Categories",
-    login: "Login"
+    login: "Login",
+    aboutUs: "About Us",
+    projectReference: "Projects & Reference",
+    articles: "Articles"
   },
 
   // Product Categories
@@ -65,8 +68,8 @@ export default {
     consultationButton: "Free Consultation",
     slides: [
         {
-            title: "Official Siemens Distributor",
-            description: "International-standard electrical solutions"
+            title: "Siemens Best Distributor Award",
+            description: "Official recognition for outstanding quality and service"
           },
           {
             title: "All in One, Best Price",
@@ -120,10 +123,86 @@ export default {
     ]
   },
 
+  // About Hokiindo Section
+  aboutHokiindo: {
+    title: "About Hokiindo Raya",
+    subtitle: "Trusted Partner for Industrial Solutions",
+    description: "PT Hokiindo Raya is the official distributor of Siemens products in Indonesia, trusted by hundreds of companies. We are committed to delivering cutting-edge industrial automation solutions to enhance productivity and operational efficiency for your company.",
+    detailButton: "About Us Details",
+    features: [
+      {
+        title: "Official Siemens Distributor",
+        description: "Official and trusted Siemens partner in Indonesia",
+        icon: "🏆"
+      },
+      {
+        title: "Professional Support Team",
+        description: "Expert team with international certification",
+        icon: "👥"
+      },
+      {
+        title: "Nationwide Service",
+        description: "Service coverage across Indonesia",
+        icon: "📍"
+      },
+      {
+        title: "Official Product Warranty",
+        description: "Quality assurance and official warranty",
+        icon: "✅"
+      }
+    ]
+  },
+
   // Featured Products Section
   featuredProducts: {
     title: "Featured Products for You",
     subtitle: "Best solutions for your industrial and business needs"
+  },
+
+  // Siemens Products Section
+  siemensProducts: {
+    title: "Featured Siemens Products",
+    subtitle: "High-quality Siemens product collection specially recommended for you",
+    availableProducts: "Siemens products available",
+    loading: "Loading Siemens products...",
+    loadingWait: "Please wait a moment",
+    errorTitle: "Failed to Load Siemens Products",
+    retryButton: "Try Again",
+    noProductsTitle: "Siemens Products Not Available",
+    noProductsMessage: "No Siemens products are currently available.",
+    refreshButton: "Refresh Data",
+    stockAvailable: "In Stock",
+    stockIndent: "Order",
+    productCode: "Code",
+    category: "Category",
+    categoryNotAvailable: "Not available",
+    addToCart: "Add to Cart",
+    contactForStock: "Chat for Stock",
+    viewDetails: "View Details",
+    priceContactSales: "Contact Sales",
+    viewAll: "View All Siemens Products",
+    whatsappStockMessage: "Hello, I would like to inquire about the stock of this product"
+  },
+
+  // Siemens Award Section
+  siemensAward: {
+    badge: "Official Recognition",
+    title: "Siemens Best Distributor Award",
+    subtitle: "Trusted Distributor with International Quality Standards",
+    description: "Official recognition from Siemens as the best distributor. This achievement reflects our commitment to delivering high-quality products and excellent service to support every customer's success.",
+    achievementTitle: "Our Best Achievements",
+    achievements: [
+      "Guaranteed product quality with international Siemens standards",
+      "Best-in-class after-sales service with response time < 2 hours",
+      "On-time distribution throughout Indonesia with 99.8% accuracy rate",
+      "Internationally certified Siemens technical support team"
+    ],
+    ctaPrimary: "View Siemens Products",
+    ctaSecondary: "Free Consultation",
+    imageAlt: "Siemens Award Certificate - Hokiindo as Best Distributor",
+    badgeText: "Best Distributor 2024",
+    statClients: "Happy Clients",
+    statYears: "Years Experience"
   },
 
   // Why Choose Section  
@@ -227,8 +306,8 @@ export default {
 
   // Products Section
   products: {
-    title: 'Products',
-    subtitle: "Explore our complete collection of Siemens products",
+    title: 'All Products',
+    subtitle: "Official products, guaranteed warranty, professional team",
     loading: 'Loading products...',
     loadingMore: 'Loading more products...',
     allProductsLoaded: 'All products loaded',
@@ -237,6 +316,8 @@ export default {
     filter: 'Filter',
     category: 'Category',
     allCategories: 'All Categories',
+    brand: 'Brand',
+    allBrands: 'All Brands',
     sort: 'Sort',
     sortByNameAsc: 'Name A-Z',
     sortByNameDesc: 'Name Z-A',
@@ -253,7 +334,32 @@ export default {
     viewDetails: 'View Details',
     viewAll: "View All",
     viewAllCategories: "View All Categories",
-    contactForPrice: "Contact for Price"
+    contactForPrice: "Contact for Price",
+    searchPlaceholder: "Search products...",
+    productCode: "Product Code",
+    stock: "Stock",
+    whatsappMessage: "Hello, I'm interested in this product",
+    // Search Results
+    searchResults: "Search Results",
+    allProducts: "All Products",
+    searchResultsFor: "Search results for:",
+    productsFound: "products found",
+    productsAvailable: "products available",
+    clearSearch: "Clear Search",
+    noSearchResults: "No products found",
+    searchSuggestion: "No products match your search",
+    tryDifferentKeywords: "Try using different keywords or change filters",
+    removeSearch: "Remove Search",
+    resetFilters: "Reset Filters",
+    searchKeyword: "search keyword",
+    showingResultsFor: "Showing results for",
+    totalResults: "Total results",
+    foundProducts: "products found",
+    toggleFilter: "Toggle Filter",
+    productCount: "Product Count",
+    moreProducts: "More products",
+    loadMore: "Load More",
+    indent: "Pre-order"
   },
 
   // Consultation
@@ -271,13 +377,38 @@ export default {
   common: {
     search: "Search products, categories, or brands...",
     searchMobile: "Search products...",
+    searchPopular: "Popular searches:",
+    searchButton: "Search",
     close: "Close",
     loading: "Loading...",
     error: "An error occurred",
     back: "Back",
     contactUs: "Contact Our Team",
     companyTagline: "Best and Most Trusted Siemens Distributor",
-    cancel: "Cancel"
+    cancel: "Cancel",
+    save: "Save",
+    edit: "Edit",
+    delete: "Delete",
+    submit: "Submit",
+    next: "Next",
+    previous: "Previous",
+    or: "or",
+    and: "and",
+    welcome: "Welcome",
+    login: "Login",
+    logout: "Logout",
+    register: "Register",
+    yes: "Yes",
+    no: "No",
+    viewAll: "View All",
+    categories: "Categories",
+    brands: "Brands",
+    noResults: "No results",
+    success: "Success",
+    required: "Required",
+    optional: "Optional",
+    copy: "Copy",
+    copied: "Copied"
   },
 
   // Cart Section
@@ -300,17 +431,138 @@ export default {
     checkout: "Checkout",
     continueShopping: "Continue Shopping",
     freeShippingNote: "Free shipping",
-    freeConsultation: "Free consultation via WhatsApp"
+    freeConsultation: "Free consultation via WhatsApp",
+    startShopping: "Start Shopping",
+    quantity: "Quantity",
+    price: "Price",
+    update: "Update",
+    proceedToCheckout: "Proceed to Checkout",
+    itemsCount: "items",
+    updateQuantity: "Update Quantity",
+    cartUpdated: "Cart updated",
+    itemRemoved: "Item removed from cart"
   },
 
   // Checkout Section
   checkout: {
     title: "Checkout",
+    customerInfo: "Customer Information",
+    orderSummary: "Order Summary",
+    paymentMethod: "Payment Method",
+    shippingMethod: "Shipping Method",
+    placeOrder: "Place Order",
+    processing: "Processing...",
+    orderNumber: "Order Number",
+    orderSuccess: "Order Successful!",
+    thankYou: "Thank you for your order",
+    
+    form: {
+      fullName: "Full Name",
+      email: "Email",
+      phone: "Phone Number",
+      address: "Full Address",
+      city: "City",
+      province: "Province",
+      postalCode: "Postal Code",
+      notes: "Order Notes",
+      addressPlaceholder: "Street, Number, RT/RW, Sub-district, District",
+      notesPlaceholder: "Special notes for this order...",
+      required: "Required",
+      optional: "Optional"
+    },
+    
+    payment: {
+      bankTransfer: "Bank Transfer",
+      bca: "BCA Bank",
+      bcaFull: "Bank Central Asia (BCA)",
+      accountNumber: "Account Number",
+      accountName: "Account Name",
+      branch: "Branch",
+      transferTo: "Transfer to BCA Account",
+      instructions: "Payment Instructions",
+      paymentDetails: "Details will be provided after order confirmation via WhatsApp"
+    },
+    
+    shipping: {
+      chatShipping: "Chat for Expedition",
+      chatDescription: "Best expedition consultation",
+      shippingNote: "We will help you choose the best expedition and calculate shipping costs according to your address",
+      shippingCost: "Shipping Cost",
+      toBeCalculated: "To be calculated",
+      pendingConfirmation: "Pending confirmation"
+    },
+    
+    steps: {
+      information: "Information",
+      payment: "Payment",
+      confirmation: "Complete"
+    },
+    
+    nextSteps: {
+      title: "Next Steps",
+      step1: "Wait for shipping cost confirmation via WhatsApp",
+      step2: "Transfer the total amount including shipping",
+      step3: "Send transfer proof via WhatsApp",
+      step4: "Order will be processed after payment confirmation"
+    },
+    
+    whatsapp: {
+      orderVia: "Order via WhatsApp",
+      chatNow: "Chat WhatsApp",
+      confirmOrder: "Hello, I want to confirm my order",
+      alreadyTransferred: "I Have Already Transferred"
+    },
+    
+    success: {
+      title: "Order Successful!",
+      subtitle: "Thank you for your order",
+      whatNext: "What's Next?",
+      orderReceived: "Your order has been received",
+      calculateShipping: "Our team will calculate shipping and contact you",
+      makePayment: "Make payment according to the confirmed total",
+      willShip: "Order will be shipped after payment confirmation",
+      continueShopping: "Continue Shopping",
+      backToHome: "Back to Home"
+    },
+    
+    validation: {
+      fillRequired: "Please complete all required fields",
+      invalidEmail: "Invalid email format",
+      invalidPhone: "Invalid phone number"
+    },
+    
+    address: {
+      selectAddress: "Select Shipping Address",
+      addAddress: "Add Address",
+      editAddress: "Edit Address",
+      deleteAddress: "Delete Address",
+      setDefault: "Set as Default",
+      addressLabel: "Address Label",
+      recipientName: "Recipient Name",
+      addressLine: "Full Address",
+      defaultAddress: "Default Address",
+      noAddresses: "No Addresses",
+      addFirstAddress: "Add First Address",
+      loginRequired: "Please login to continue checkout",
+      saveAddress: "Save Address",
+      cancel: "Cancel",
+      delete: "Delete",
+      edit: "Edit",
+      labelPlaceholder: "Home, Office, Warehouse, etc",
+      recipientPlaceholder: "Full recipient name",
+      phonePlaceholder: "08xx xxxx xxxx",
+      addressPlaceholder: "Street, Number, RT/RW, Village, District",
+      cityPlaceholder: "City name",
+      provincePlaceholder: "Province name",
+      postalCodePlaceholder: "12345",
+      confirmDelete: "Are you sure you want to delete this address?"
+    },
+    
+    // Legacy fields for backward compatibility
     shippingInfo: "Shipping Information",
     fullName: "Full Name",
     phone: "Phone Number",
     email: "Email",
-    address: "Full Address",
     city: "City",
     postalCode: "Postal Code",
     orderNotes: "Order Notes",
@@ -322,7 +574,6 @@ export default {
     postalCodePlaceholder: "12345",
     orderNotesPlaceholder: "Special notes for order (optional)",
     orderViaMhatsApp: "Order via WhatsApp",
-    processing: "Processing...",
     orderWillBeSent: "Order will be sent via WhatsApp for confirmation",
     required: "Required"
   },
@@ -351,7 +602,27 @@ export default {
     inStock: "In Stock",
     outOfStock: "Out of Stock",
     maxQuantity: "Maximum",
-    minQuantity: "Minimum 1"
+    minQuantity: "Minimum 1",
+    descriptionPlaceholder: "Product description will be provided by our team soon",
+    reviews: "Product Reviews",
+    writeReview: "Write Review",
+    submitReview: "Submit Review",
+    loginToReview: "Login to write a review",
+    noReviews: "No reviews yet for this product",
+    beFirstReviewer: "Be the first to review!",
+    rating: "Rating",
+    reviewText: "Your Review",
+    reviewPlaceholder: "Share your experience with this product...",
+    submittingReview: "Submitting review...",
+    reviewSubmitted: "Review submitted successfully!",
+    reviewError: "Failed to submit review",
+    averageRating: "Average Rating",
+    totalReviews: "reviews",
+    helpful: "Helpful",
+    notHelpful: "Not Helpful",
+    reviewDate: "Review Date",
+    adding: "Adding...",
+    addedToCart: "Added to Cart!"
   },
 
   // Authentication Section
@@ -428,7 +699,11 @@ export default {
     sending: "Sending...",
     resetPasswordSuccess: "Password reset email sent! Please check your inbox.",
     resetPasswordError: "Failed to send reset password email",
-    resetPasswordErrorGeneral: "An error occurred while sending reset password email"
+    resetPasswordErrorGeneral: "An error occurred while sending reset password email",
+    invalidCredentials: "Invalid email or password",
+    accountNotVerified: "Account not verified",
+    verifyEmail: "Verify Email",
+    resendVerification: "Resend Verification"
   },
 
   // Privacy Policy
@@ -624,5 +899,50 @@ export default {
         "Address: Jl. Industri Raya No. 123, Jakarta 12345, Indonesia"
       ]
     }
+  },
+
+  // Contact Section
+  contact: {
+    title: "Contact Us",
+    subtitle: "We're ready to help with your needs",
+    getInTouch: "Get In Touch",
+    address: "Address",
+    phone: "Phone",
+    email: "Email",
+    workingHours: "Working Hours",
+    monday: "Monday",
+    friday: "Friday",
+    saturday: "Saturday",
+    sunday: "Sunday",
+    closed: "Closed",
+    sendMessage: "Send Message",
+    name: "Name",
+    subject: "Subject",
+    message: "Message",
+    send: "Send",
+    messageSent: "Message sent successfully",
+    messageError: "Failed to send message"
+  },
+
+  // Footer Section
+  footer: {
+    company: "Company",
+    about: "About Us",
+    careers: "Careers",
+    blog: "Blog",
+    products: "Products",
+    categories: "Categories",
+    brands: "Brands",
+    support: "Support",
+    contact: "Contact",
+    faq: "FAQ",
+    shipping: "Shipping",
+    returns: "Returns",
+    social: "Social Media",
+    newsletter: "Newsletter",
+    subscribe: "Subscribe",
+    enterEmail: "Enter your email",
+    copyright: "Copyright",
+    allRightsReserved: "All rights reserved"
   }
 }; 

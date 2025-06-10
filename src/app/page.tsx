@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "@/context/LangContext";
-import { useSiemensProducts } from "@/hooks/useProducts";
+import { useSiemensProducts, useSupabaseSiemensProducts } from "@/hooks/useProducts";
 import { formatRupiah } from "@/utils/formatters";
 
 export default function Home() {
@@ -36,6 +36,29 @@ export default function Home() {
   
   // Get Siemens products from API
   const { products: siemensProducts, loading: productsLoading, error: productsError, refetch } = useSiemensProducts(6);
+  
+  // Get Featured Siemens products from Supabase
+  const { products: featuredProducts, loading: featuredLoading, error: featuredError, refetch: refetchFeatured } = useSupabaseSiemensProducts(10);
+  
+  // Debug log to see what we're getting
+  useEffect(() => {
+    console.log('🔍 [HOME] Featured products data:', {
+      loading: featuredLoading,
+      error: featuredError,
+      productsCount: featuredProducts?.length || 0,
+      firstFewProducts: featuredProducts?.slice(0, 3).map(p => ({
+        id: p.id,
+        name: p.name?.substring(0, 30) + '...',
+        price: p.price,
+        accurate_code: p.accurate_code,
+        status: p.status
+      }))
+    });
+    
+    if (!featuredLoading && featuredProducts?.length === 1) {
+      console.warn('⚠️ [HOME] Only 1 product loaded - this might indicate filtering issues');
+    }
+  }, [featuredProducts, featuredLoading, featuredError]);
   
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -45,12 +68,15 @@ export default function Home() {
   const [currentPromoSlide, setCurrentPromoSlide] = useState(0);
   const [isPromoPlaying, setIsPromoPlaying] = useState(true);
   const [isPromoTransitioning, setIsPromoTransitioning] = useState(false);
+  const [currentFeaturedSlide, setCurrentFeaturedSlide] = useState(0);
+  const [isFeaturedTransitioning, setIsFeaturedTransitioning] = useState(false);
   const [isVisible, setIsVisible] = useState({
     features: false,
     logos: false,
     whyChoose: false,
     projects: false,
-    promos: false
+    promos: false,
+    featured: false
   });
   
   const featuresRef = useRef<HTMLDivElement>(null);
@@ -58,6 +84,7 @@ export default function Home() {
   const whyChooseRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const promosRef = useRef<HTMLDivElement>(null);
+  const featuredRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   
   // Combine language data with images
@@ -65,7 +92,7 @@ export default function Home() {
     id: index + 1,
     title: slide.title,
     description: slide.description,
-    image: `/images/asset-web/baner-${index + 1}.png`
+    image: index === 0 ? `/images/asset-web/banner-pakbob.png` : `/images/asset-web/baner-${index + 1}.png`
   }));
 
   // Get project references from language context
@@ -148,6 +175,36 @@ export default function Home() {
     setIsPromoPlaying(true);
   };
 
+  // Featured products carousel navigation functions
+  const nextFeaturedSlide = () => {
+    if (isFeaturedTransitioning || !featuredProducts || featuredProducts.length === 0) return;
+    setIsFeaturedTransitioning(true);
+    
+    if (window.innerWidth >= 768) {
+      // Desktop: move by 1, but don't exceed the limit where we can't show 4 items
+      const maxSlide = Math.max(0, featuredProducts.length - 4);
+      setCurrentFeaturedSlide((prev) => Math.min(prev + 1, maxSlide));
+    } else {
+      // Mobile: move by 2
+      setCurrentFeaturedSlide((prev) => (prev + 2) % featuredProducts.length);
+    }
+    setTimeout(() => setIsFeaturedTransitioning(false), 600);
+  };
+
+  const prevFeaturedSlide = () => {
+    if (isFeaturedTransitioning || !featuredProducts || featuredProducts.length === 0) return;
+    setIsFeaturedTransitioning(true);
+    
+    if (window.innerWidth >= 768) {
+      // Desktop: move by 1, minimum is 0
+      setCurrentFeaturedSlide((prev) => Math.max(prev - 1, 0));
+    } else {
+      // Mobile: move by 2
+      setCurrentFeaturedSlide((prev) => (prev - 2 + featuredProducts.length) % featuredProducts.length);
+    }
+    setTimeout(() => setIsFeaturedTransitioning(false), 600);
+  };
+
   // Intersection Observer for animations
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -165,6 +222,8 @@ export default function Home() {
               setIsVisible(prev => ({ ...prev, projects: true }));
             } else if (target === promosRef.current) {
               setIsVisible(prev => ({ ...prev, promos: true }));
+            } else if (target === featuredRef.current) {
+              setIsVisible(prev => ({ ...prev, featured: true }));
             }
           }
         });
@@ -177,6 +236,7 @@ export default function Home() {
     if (whyChooseRef.current) observer.observe(whyChooseRef.current);
     if (projectsRef.current) observer.observe(projectsRef.current);
     if (promosRef.current) observer.observe(promosRef.current);
+    if (featuredRef.current) observer.observe(featuredRef.current);
 
     return () => observer.disconnect();
   }, []);
@@ -465,29 +525,37 @@ export default function Home() {
 
                   return (
                     <div key={slide.id} className={slideClass}>
-                      <div 
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[800ms] ease-in-out"
-                        style={{ 
-                          backgroundImage: `url(${slide.image})`,
-                          filter: 'brightness(0.6)',
-                          transform: isActive ? 'scale(1)' : 'scale(1.05)'
-                        }}
-                      />
+                      {index === 0 ? (
+                        // Special handling for first slide (award image) - centered and not cropped
+                        <div className="absolute inset-0 transition-transform duration-[800ms] ease-in-out">
+                          <img 
+                            src={slide.image}
+                            alt="Siemens Award Certificate"
+                            className="w-full h-full object-cover object-center transition-transform duration-[800ms] ease-in-out"
+                            style={{ 
+                              filter: 'brightness(0.6)',
+                              transform: isActive ? 'scale(1)' : 'scale(1.05)',
+                              objectPosition: 'center 30%'
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        // Regular background image for other slides
+                        <div 
+                          className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[800ms] ease-in-out"
+                          style={{ 
+                            backgroundImage: `url(${slide.image})`,
+                            filter: 'brightness(0.6)',
+                            transform: isActive ? 'scale(1)' : 'scale(1.05)'
+                          }}
+                        />
+                      )}
                       
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
                       
                       <div className="relative z-10 flex items-end h-full p-4 sm:p-6 md:p-8">
                         <div className="w-full max-w-4xl mx-auto pb-8 sm:pb-12 md:pb-16">
-                          <div className={`inline-flex items-center space-x-2 sm:space-x-3 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 sm:px-6 sm:py-3 mb-4 sm:mb-6 transition-all duration-1000 ${
-                            isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                          }`} style={{ transitionDelay: isActive ? '200ms' : '0ms' }}>
-                            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-600 rounded-full flex items-center justify-center">
-                              <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-                            </div>
-                            <span className="text-xs sm:text-sm font-semibold text-white/90 uppercase tracking-wide">
-                              Hokiindo Raya
-                            </span>
-                          </div>
+
                           
                           <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                             <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight transition-all duration-1000 ${
@@ -503,23 +571,23 @@ export default function Home() {
                             </p>
                           </div>
                           
-                          <div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 transition-all duration-1000 ${
+                          <div className={`flex flex-row md:flex-row justify-start gap-2 md:gap-4 mb-8 md:mb-0 transition-all duration-1000 ${
                             isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                           }`} style={{ transitionDelay: isActive ? '800ms' : '0ms' }}>
                             <Link 
                               href="/products"
-                              className="inline-flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-5 py-3 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 shadow-2xl hover:shadow-red-500/25 transform hover:-translate-y-1 hover:scale-105"
+                              className="flex-1 md:flex-none inline-flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-3 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-xs md:text-base transition-all duration-300 shadow-2xl hover:shadow-red-500/25 transform hover:-translate-y-1 hover:scale-105"
                             >
-                              <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                              {lang.hero.exploreButton}
+                              <Shield className="w-3 h-3 md:w-5 md:h-5 mr-1 md:mr-2" />
+                              <span>{lang.hero.exploreButton}</span>
                             </Link>
                             
                             <Link 
                               href="#contact"
-                              className="inline-flex items-center justify-center bg-white/20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-gray-900 px-5 py-3 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+                              className="flex-1 md:flex-none inline-flex items-center justify-center bg-white/20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-gray-900 px-3 py-2 md:px-6 md:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-xs md:text-base transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
                             >
-                              <Award className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                              {lang.hero.consultationButton}
+                              <Award className="w-3 h-3 md:w-5 md:h-5 mr-1 md:mr-2" />
+                              <span>{lang.hero.consultationButton}</span>
                             </Link>
                           </div>
                         </div>
@@ -532,19 +600,19 @@ export default function Home() {
               <button
                 onClick={prevSlide}
                 disabled={isTransitioning}
-                className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-4 rounded-full transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110"
+                className="absolute left-2 sm:left-4 md:left-6 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-1 sm:p-2 md:p-4 rounded-full transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110"
                 aria-label="Previous slide"
               >
-                <ChevronLeft className="w-6 h-6" />
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </button>
               
               <button
                 onClick={nextSlide}
                 disabled={isTransitioning}
-                className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-4 rounded-full transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110"
+                className="absolute right-2 sm:right-4 md:right-6 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-1 sm:p-2 md:p-4 rounded-full transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110"
                 aria-label="Next slide"
               >
-                <ChevronRight className="w-6 h-6" />
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </button>
               
               <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-30">
@@ -638,6 +706,82 @@ export default function Home() {
             <div className="flex items-center space-x-2 text-gray-600">
               <Shield className="w-5 h-5 text-blue-500" />
               <span className="text-sm">{lang.trusted.warranty}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Hokiindo Section */}
+      <section className="w-full py-20 bg-gradient-to-br from-red-600 to-red-700 relative overflow-hidden">
+        {/* Background Patterns */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-48 h-48 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white rounded-full blur-2xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Content */}
+            <div className="text-white space-y-6">
+              <div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                  {lang.aboutHokiindo.title}
+                </h2>
+                <p className="text-xl md:text-2xl text-red-100 font-light mb-6">
+                  {lang.aboutHokiindo.subtitle}
+                </p>
+                <div className="w-24 h-1 bg-white/50 mb-8"></div>
+              </div>
+
+              <p className="text-lg leading-relaxed text-red-50 mb-8">
+                {lang.aboutHokiindo.description}
+              </p>
+
+              {/* Features Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                {lang.aboutHokiindo.features.map((feature: { title: string; description: string; icon: string }, index: number) => (
+                  <div key={index} className="flex items-start space-x-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <div className="text-3xl flex-shrink-0">
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">{feature.title}</h4>
+                      <p className="text-red-100 text-sm leading-relaxed">{feature.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA Button */}
+              <div>
+                <Link 
+                  href="/about"
+                  className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-red-600 font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-white/25 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 text-lg"
+                >
+                  <span>{lang.aboutHokiindo.detailButton}</span>
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src="https://placehold.co/600x700/f3f4f6/9ca3af?text=Hokiindo+Office"
+                  alt="Hokiindo Raya Office"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+              </div>
+              
+              {/* Floating Stats Card */}
+              <div className="absolute -top-6 -right-6 bg-white rounded-xl shadow-xl p-4 text-center border border-gray-100">
+                <div className="text-2xl font-bold text-red-600 mb-1">100+</div>
+                <div className="text-xs text-gray-600 uppercase tracking-wide">Happy Clients</div>
+              </div>
             </div>
           </div>
         </div>
@@ -828,239 +972,470 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Product Spesial untuk Anda Section */}
+
+      {/* Featured Products Section - Produk Pilihan untuk Anda */}
       <section 
-        ref={promosRef}
-        className="w-full py-20 bg-gray-50"
+        ref={featuredRef}
+        className="w-full pt-20 pb-5 bg-gradient-to-br from-red-50 via-white to-rose-50"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-[20px]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-5">
           
-          {/* Section Header with Navigation */}
-          <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between mb-12 transition-all duration-1000 ${
-            isVisible.promos ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          {/* Section Header */}
+          <div className={`flex pb-5 flex-col sm:flex-row sm:items-center sm:justify-between mb-12 transition-all duration-1000 ${
+            isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}>
             <div className="mb-6 sm:mb-0">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                {lang.featuredProducts.title}
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                {lang.siemensProducts.title}
               </h2>
               <p className="text-lg text-gray-600 font-light">
-                {lang.featuredProducts.subtitle}
+                {lang.siemensProducts.subtitle}
               </p>
-              
+              {!featuredLoading && featuredProducts.length > 0 && (
+                <p className="text-sm text-red-600 font-medium mt-4">
+                  {featuredProducts.length} {lang.siemensProducts.availableProducts}
+                </p>
+              )}
             </div>
             
-            {/* Navigation Arrows - Only show if products are loaded */}
-            {!productsLoading && !productsError && siemensProducts.length > 0 && (
+            {/* Navigation Arrows */}
+            {!featuredLoading && !featuredError && featuredProducts.length > 1 && (
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={prevPromoSlide}
-                  disabled={isPromoTransitioning}
-                  className="w-12 h-12 bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-600 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
-                  aria-label="Previous products"
+                  onClick={prevFeaturedSlide}
+                  disabled={isFeaturedTransitioning}
+                  className="w-12 h-12 bg-white hover:bg-red-50 border border-red-200 hover:border-red-600 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+                  aria-label="Previous featured products"
                 >
-                  <ChevronLeft className="w-5 h-5 text-gray-600 group-hover:text-red-600 transition-colors duration-300" />
+                  <ChevronLeft className="w-5 h-5 text-red-600 group-hover:text-red-700 transition-colors duration-300" />
                 </button>
                 <button
-                  onClick={nextPromoSlide}
-                  disabled={isPromoTransitioning}
-                  className="w-12 h-12 bg-white hover:bg-gray-50 border border-gray-200 hover:border-red-600 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
-                  aria-label="Next products"
+                  onClick={nextFeaturedSlide}
+                  disabled={isFeaturedTransitioning}
+                  className="w-12 h-12 bg-white hover:bg-red-50 border border-red-200 hover:border-red-600 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
+                  aria-label="Next featured products"
                 >
-                  <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-red-600 transition-colors duration-300" />
+                  <ChevronRight className="w-5 h-5 text-red-600 group-hover:text-red-700 transition-colors duration-300" />
                 </button>
               </div>
             )}
           </div>
           
           {/* Loading State */}
-          {productsLoading && (
+          {featuredLoading && (
             <div className={`text-center py-16 transition-all duration-1000 delay-300 ${
-              isVisible.promos ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}>
               <div className="animate-spin w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-gray-600 font-medium">Mengambil data produk dari Accurate API...</p>
-              <p className="text-sm text-gray-500 mt-2">Mohon tunggu sebentar</p>
+              <p className="text-gray-600 font-medium">{lang.siemensProducts.loading}</p>
+              <p className="text-sm text-gray-500 mt-2">{lang.siemensProducts.loadingWait}</p>
             </div>
           )}
           
           {/* Error State */}
-          {productsError && (
+          {featuredError && (
             <div className={`text-center py-16 transition-all duration-1000 delay-300 ${
-              isVisible.promos ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}>
               <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-2xl mx-auto">
                 <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-red-800 mb-2">Gagal Memuat Produk</h3>
+                <h3 className="text-lg font-semibold text-red-800 mb-2">{lang.siemensProducts.errorTitle}</h3>
                 <div className="text-red-600 mb-4 text-sm text-left bg-red-100 p-3 rounded">
-                  <pre className="whitespace-pre-wrap">{productsError}</pre>
+                  <pre className="whitespace-pre-wrap">{featuredError}</pre>
                 </div>
                 <button
-                  onClick={refetch}
+                  onClick={refetchFeatured}
                   className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200"
                 >
-                  Coba Lagi
+                  {lang.siemensProducts.retryButton}
                 </button>
               </div>
             </div>
           )}
           
           {/* No Products Found State */}
-          {!productsLoading && !productsError && siemensProducts.length === 0 && (
+          {!featuredLoading && !featuredError && featuredProducts.length === 0 && (
             <div className={`text-center py-16 transition-all duration-1000 delay-300 ${
-              isVisible.promos ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
-                <AlertCircle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-yellow-800 mb-2">Produk Tidak Ditemukan</h3>
-                <p className="text-yellow-600 mb-4 text-sm">
-                  Tidak ada produk yang ditemukan dalam database Accurate saat ini.
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-red-800 mb-2">{lang.siemensProducts.noProductsTitle}</h3>
+                <p className="text-red-600 mb-4 text-sm">
+                  {lang.siemensProducts.noProductsMessage}
                 </p>
                 <button
-                  onClick={refetch}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200"
+                  onClick={refetchFeatured}
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200"
                 >
-                  Refresh Data
+                  {lang.siemensProducts.refreshButton}
                 </button>
               </div>
             </div>
           )}
           
           {/* Products Carousel */}
-          {!productsLoading && !productsError && siemensProducts.length > 0 && (
-            <div className={`relative overflow-hidden transition-all duration-1000 delay-300 ${
-              isVisible.promos ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          {!featuredLoading && !featuredError && featuredProducts.length > 0 && (
+            <div className={`transition-all duration-1000 delay-300 ${
+              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}>
-              <div 
-                className="flex transition-transform duration-600 ease-in-out"
-                style={{ 
-                  transform: `translateX(-${(currentPromoSlide % siemensProducts.length) * (100 / 4)}%)`,
-                }}
-                onMouseEnter={handlePromoHover}
-                onMouseLeave={handlePromoLeave}
-              >
-                {[...siemensProducts, ...siemensProducts.slice(0, 4)].map((product, index) => (
-                  <div 
-                    key={`${product.id}-${index}`} 
-                    className="w-full sm:w-1/2 lg:w-1/4 flex-shrink-0 px-3"
+              
+              {/* Desktop Carousel - Show 4 products, slide by 1 */}
+              <div className="hidden md:block relative overflow-hidden">
+                <div 
+                  className="flex transition-transform duration-600 ease-in-out"
+                  style={{ 
+                    transform: `translateX(-${currentFeaturedSlide * (100 / 4)}%)`,
+                  }}
+                >
+                  {featuredProducts.map((product, index) => (
+                                      <div 
+                    key={product.id} 
+                    className="w-1/4 flex-shrink-0 px-3 pb-5"
                   >
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 h-full flex flex-col">
-                      
-                      {/* Product Image */}
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <img 
-                          src="https://placehold.co/600x400/f3f4f6/9ca3af?text=Product+Image"
-                          alt={product.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
+                      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 h-full flex flex-col">
                         
-                        {/* Stock Status Badge */}
-                        {(product.stock || product.balance || 0) > 0 ? (
-                          <div className="absolute top-3 left-3">
-                            <span className="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                              Tersedia
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="absolute top-3 left-3">
-                            <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-                              Indent
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Product Content */}
-                      <div className="p-5 flex-1 flex flex-col">
-                        
-                        {/* Product Name */}
-                        <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 leading-tight transition-colors duration-300 group-hover:text-red-600">
-                          {product.name}
-                        </h3>
-                        
-                        {/* Product Model/Item Number */}
-                        <div className="mb-3">
-                          <p className="text-sm font-mono font-medium text-gray-600">
-                            <span className="text-xs text-gray-500">Model: </span>
-                            {product.model || product.no || product.shortName || 'N/A'}
-                          </p>
-                        </div>
-                        
-                        
-                        
-                        {/* Price */}
-                        <div className="mb-4">
-                          <span className="text-2xl font-bold text-red-600">
-                            {formatRupiah(product.unitPrice)}
-                          </span>
-                          <span className="text-sm text-gray-500 ml-2">
-                            /{product.unitName || product.unit1Name || 'PCS'}
-                          </span>
-                        </div>
-                        
-                        {/* Stock Information - Only show if stock > 0 */}
-                        {(product.stock || product.balance || 0) > 0 && (
-                          <div className="mb-4">
-                            <div className="text-sm text-gray-600">
-                              <span className="font-medium">Stok: </span>
-                              <span className="font-bold text-green-600">
-                                {product.stock || product.balance || 0}
+                        {/* Product Image */}
+                        <div className="relative aspect-[4/3] overflow-hidden">
+                          <img 
+                            src={product.admin_thumbnail || "https://placehold.co/600x400/f8fafc/64748b?text=Product+Image"}
+                            alt={product.name || 'Product'}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          
+                          {/* Stock Status Badge */}
+                          {product.stock_quantity > 0 ? (
+                            <div className="absolute top-3 left-3">
+                              <span className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                                {lang.siemensProducts.stockAvailable}
                               </span>
-                              <span className="ml-1">{product.unitName || product.unit1Name || 'PCS'}</span>
                             </div>
-                          </div>
-                        )}
-                        
-                        {/* Action Buttons */}
-                        <div className="space-y-2 mt-auto">
-                          {(product.stock || product.balance || 0) > 0 ? (
-                            <button 
-                              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 transform hover:-translate-y-1 hover:shadow-lg"
-                            >
-                              <ShoppingCart className="w-4 h-4" />
-                              <span>Tambah ke Keranjang</span>
-                            </button>
                           ) : (
-                            <a 
-                              href={`https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20menanyakan%20ketersediaan%20stok%20untuk%20produk:%20${encodeURIComponent(product.name)}%20(Model:%20${encodeURIComponent(product.model || product.no || product.shortName || 'N/A')})`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 transform hover:-translate-y-1 hover:shadow-lg"
-                            >
-                              <MessageCircle className="w-4 h-4" />
-                              <span>Chat untuk Stock</span>
-                            </a>
+                            <div className="absolute top-3 left-3">
+                              <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                                {lang.siemensProducts.stockIndent}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Product Content */}
+                        <div className="p-5 flex-1 flex flex-col">
+                          
+                          {/* Product Name */}
+                          <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 leading-tight transition-colors duration-300 group-hover:text-red-600">
+                            {product.name && product.name.trim() && product.name.toLowerCase() !== 'null' 
+                              ? product.name 
+                              : 'Produk Berkualitas'}
+                          </h3>
+                          
+                          {/* Product Code */}
+                          {product.accurate_code && (
+                            <div className="mb-3">
+                              <p className="text-sm font-mono font-medium text-gray-600 bg-gray-100 px-3 py-2 rounded">
+                                {lang.siemensProducts.productCode}: {product.accurate_code}
+                              </p>
+                            </div>
                           )}
                           
-                          <Link 
-                            href={`/products/${product.id}`}
-                            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-900 font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm"
-                          >
-                            <Eye className="w-4 h-4" />
-                            <span>Lihat Detail</span>
-                          </Link>
+                          {/* Category */}
+                          <div className="mb-4">
+                            <p className="text-sm font-medium text-gray-700">
+                              {lang.siemensProducts.category}: <span className="text-gray-900">{product.category || lang.siemensProducts.categoryNotAvailable}</span>
+                            </p>
+                          </div>
+                          
+                          {/* Price */}
+                          <div className="mb-4">
+                            <span className="text-2xl font-bold text-red-600">
+                              {product.price > 0 ? formatRupiah(product.price) : lang.siemensProducts.priceContactSales}
+                            </span>
+                          </div>
+                          
+                          {/* Action Button */}
+                          <div className="mt-auto">
+                            {product.stock_quantity > 0 ? (
+                              <button 
+                                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm"
+                              >
+                                <ShoppingCart className="w-4 h-4" />
+                                <span>{lang.siemensProducts.addToCart}</span>
+                              </button>
+                            ) : (
+                              <a 
+                                href={`https://wa.me/628111086180?text=${encodeURIComponent(lang.siemensProducts.whatsappStockMessage)}:%20${encodeURIComponent(product.name || 'Produk')}${product.accurate_code ? `%20(${lang.siemensProducts.productCode}:%20${encodeURIComponent(product.accurate_code)})` : ''}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm"
+                              >
+                                <MessageCircle className="w-4 h-4" />
+                                <span>{lang.siemensProducts.contactForStock}</span>
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+              
+              {/* Mobile Carousel - Show 2 products, slide by 2 */}
+              <div className="md:hidden relative overflow-hidden">
+                <div 
+                  className="flex transition-transform duration-600 ease-in-out"
+                  style={{ 
+                    transform: `translateX(-${currentFeaturedSlide * 50}%)`,
+                  }}
+                >
+                  {featuredProducts.map((product, index) => (
+                    <div 
+                      key={product.id} 
+                      className="w-1/2 flex-shrink-0 px-2 pb-5"
+                    >
+                      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden group transition-all duration-300 hover:shadow-xl h-full flex flex-col">
+                        
+                        {/* Product Image */}
+                        <div className="relative aspect-square overflow-hidden">
+                          <img 
+                            src={product.admin_thumbnail || "https://placehold.co/400x400/f8fafc/64748b?text=Product"}
+                            alt={product.name || 'Product'}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          
+                          {/* Stock Status Badge */}
+                          {product.stock_quantity > 0 ? (
+                            <div className="absolute top-2 left-2">
+                              <span className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                                {lang.siemensProducts.stockAvailable}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="absolute top-2 left-2">
+                              <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+                                {lang.siemensProducts.stockIndent}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Product Content */}
+                        <div className="p-4 flex-1 flex flex-col">
+                          
+                          {/* Product Name */}
+                          <h3 className="font-bold text-base text-gray-900 mb-2 line-clamp-2 leading-tight transition-colors duration-300 group-hover:text-red-600">
+                            {product.name && product.name.trim() && product.name.toLowerCase() !== 'null' 
+                              ? product.name 
+                              : 'Produk Berkualitas'}
+                          </h3>
+                          
+                          {/* Product Code */}
+                          {product.accurate_code && (
+                            <div className="mb-2">
+                              <p className="text-xs font-mono font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                                {product.accurate_code}
+                              </p>
+                            </div>
+                          )}
+                          
+                          {/* Category */}
+                          <div className="mb-3">
+                            <p className="text-xs text-gray-600">
+                              {product.category || lang.siemensProducts.categoryNotAvailable}
+                            </p>
+                          </div>
+                          
+                          {/* Price */}
+                          <div className="mb-3">
+                            <span className="text-lg font-bold text-red-600">
+                              {product.price > 0 ? formatRupiah(product.price) : lang.siemensProducts.priceContactSales}
+                            </span>
+                          </div>
+                          
+                          {/* Action Button */}
+                          <div className="mt-auto">
+                            {product.stock_quantity > 0 ? (
+                              <button 
+                                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 flex items-center justify-center space-x-1 text-sm"
+                              >
+                                <ShoppingCart className="w-3 h-3" />
+                                <span>{lang.siemensProducts.addToCart}</span>
+                              </button>
+                            ) : (
+                              <a 
+                                href={`https://wa.me/628111086180?text=${encodeURIComponent(lang.siemensProducts.whatsappStockMessage)}:%20${encodeURIComponent(product.name || 'Produk')}${product.accurate_code ? `%20(${lang.siemensProducts.productCode}:%20${encodeURIComponent(product.accurate_code)})` : ''}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 flex items-center justify-center space-x-1 text-sm"
+                              >
+                                <MessageCircle className="w-3 h-3" />
+                                <span>{lang.siemensProducts.contactForStock}</span>
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
           
           {/* View All Products CTA */}
-          {!productsLoading && (
-            <div className={`text-center mt-12 transition-all duration-1000 delay-500 ${
-              isVisible.promos ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          {!featuredLoading && featuredProducts.length > 0 && (
+            <div className={`text-center mt-12 mb-16 transition-all duration-1000 delay-500 ${
+              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}>
               <Link 
-                href="/products?filter=siemens"
+                href="/search?query=siemens"
                 className="inline-flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 text-lg"
               >
-                <span>Lihat Semua Produk Siemens</span>
+                <span>{lang.siemensProducts.viewAll}</span>
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Siemens Award Banner Section */}
+      <section className="w-full py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
+        {/* Background Patterns */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 right-10 w-40 h-40 bg-yellow-400 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-20 w-60 h-60 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-yellow-300 rounded-full blur-2xl"></div>
+          <div className="absolute bottom-10 right-10 w-20 h-20 bg-blue-300 rounded-full blur-xl"></div>
+        </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 border border-white/20 rounded-full"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 border border-white/10 rounded-full"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Content */}
+            <div className="text-white space-y-6 order-2 lg:order-1">
+              <div>
+                <div className="flex items-center space-x-3 mb-4">
+                  <Award className="w-8 h-8 text-yellow-400" />
+                  <span className="bg-yellow-400 text-blue-900 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
+                    {lang.siemensAward?.badge || "Official Recognition"}
+                  </span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                  {lang.siemensAward?.title || "Penghargaan Prestasi Terbaik dari Siemens"}
+                </h2>
+                <p className="text-xl md:text-2xl text-blue-100 font-light mb-6">
+                  {lang.siemensAward?.subtitle || "Distributor Terpercaya dengan Kualitas Terjamin"}
+                </p>
+                <div className="w-24 h-1 bg-yellow-400 mb-8"></div>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-lg leading-relaxed text-blue-50">
+                  {lang.siemensAward?.description || "Kami dengan bangga menerima penghargaan sebagai distributor terbaik dari Siemens. Prestasi ini mencerminkan komitmen kami dalam memberikan produk berkualitas tinggi dan layanan terdepan kepada setiap pelanggan."}
+                </p>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                  <h4 className="font-bold text-xl mb-4 flex items-center">
+                    <Star className="w-6 h-6 text-yellow-400 mr-3" />
+                    {lang.siemensAward?.achievementTitle || "Pencapaian Terbaik"}
+                  </h4>
+                  <ul className="space-y-3">
+                    {(lang.siemensAward?.achievements || [
+                      "Kualitas produk terjamin dengan standar internasional",
+                      "Layanan purna jual terbaik di kelasnya", 
+                      "Distribusi tepat waktu dan terpercaya",
+                      "Tim technical support berpengalaman"
+                    ]).map((achievement: string, index: number) => (
+                      <li key={index} className="flex items-start space-x-3">
+                        <CheckCircle className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-blue-100">{achievement}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                <Link 
+                  href="/products"
+                  className="inline-flex items-center justify-center bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-yellow-400/25 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 text-lg"
+                >
+                  <span>{lang.siemensAward?.ctaPrimary || "Lihat Produk Siemens"}</span>
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
+                <a
+                  href="https://wa.me/628111086180"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border-2 border-white/30 hover:border-white/50 font-bold px-8 py-4 rounded-2xl transition-all duration-300 transform hover:-translate-y-1 text-lg"
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  <span>{lang.siemensAward?.ctaSecondary || "Konsultasi Gratis"}</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative order-1 lg:order-2">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                <img 
+                  src="/images/asset-web/banner-pakbob.png"
+                  alt={lang.siemensAward?.imageAlt || "Siemens Award Certificate - Hokiindo as Best Distributor"}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://placehold.co/600x800/1e40af/ffffff?text=Award+Certificate";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                
+                {/* Floating Award Badge */}
+                <div className="absolute top-6 right-6 bg-yellow-400 text-blue-900 p-4 rounded-xl shadow-xl">
+                  <Award className="w-8 h-8 mb-2 mx-auto" />
+                  <div className="text-xs font-bold text-center uppercase tracking-wider">
+                    {lang.siemensAward?.badgeText || "Best Distributor 2024"}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Floating Stats Cards */}
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 border border-gray-100">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Users className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">1000+</div>
+                    <div className="text-xs text-gray-600 uppercase tracking-wide">
+                      {lang.siemensAward?.statClients || "Happy Clients"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute -top-6 -left-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl shadow-xl p-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">15+</div>
+                    <div className="text-xs text-blue-100 uppercase tracking-wide">
+                      {lang.siemensAward?.statYears || "Years Experience"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

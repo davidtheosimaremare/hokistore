@@ -8,7 +8,10 @@ export default {
     about: "Tentang",
     contact: "Kontak",
     categories: "Kategori Produk",
-    login: "Masuk"
+    login: "Masuk",
+    aboutUs: "Tentang Kami",
+    projectReference: "Project & Reference",
+    articles: "Artikel"
   },
 
   // Product Categories
@@ -65,8 +68,8 @@ export default {
     consultationButton: "Konsultasi Gratis",
     slides: [
       {
-        title: "Distributor Resmi Siemens",
-        description: "Solusi kelistrikan berkualitas internasional"
+        title: "Award Distributor Terbaik Siemens",
+        description: "Penghargaan resmi untuk kualitas dan layanan terdepan"
       },
       {
         title: "Semua Ada, Harga Hemat",
@@ -120,10 +123,86 @@ export default {
     ]
   },
 
+  // About Hokiindo Section
+  aboutHokiindo: {
+    title: "Tentang Hokiindo Raya",
+    subtitle: "Partner Terpercaya untuk Solusi Industri",
+    description: "PT Hokiindo Raya adalah distributor resmi produk Siemens di Indonesia yang telah dipercaya oleh ratusan perusahaan. Kami berkomitmen menghadirkan solusi otomasi industri terdepan untuk meningkatkan produktivitas dan efisiensi operasional perusahaan Anda.",
+    detailButton: "Detail Tentang Kami",
+    features: [
+      {
+        title: "Distributor Resmi Siemens",
+        description: "Partner resmi dan terpercaya Siemens di Indonesia",
+        icon: "🏆"
+      },
+      {
+        title: "Tim Support Professional",
+        description: "Tim ahli dengan sertifikasi internasional",
+        icon: "👥"
+      },
+      {
+        title: "Layanan di Seluruh Indonesia",
+        description: "Jangkauan service ke seluruh nusantara",
+        icon: "📍"
+      },
+      {
+        title: "Garansi Produk Resmi",
+        description: "Jaminan kualitas dan garansi resmi",
+        icon: "✅"
+      }
+    ]
+  },
+
   // Featured Products Section
   featuredProducts: {
     title: "Produk Pilihan untuk Anda",
     subtitle: "Solusi terbaik untuk kebutuhan industri dan bisnis Anda"
+  },
+
+  // Siemens Products Section
+  siemensProducts: {
+    title: "Produk Siemens Pilihan",
+    subtitle: "Koleksi produk Siemens berkualitas tinggi yang direkomendasikan khusus untuk Anda",
+    availableProducts: "produk Siemens tersedia",
+    loading: "Mengambil produk Siemens...",
+    loadingWait: "Mohon tunggu sebentar",
+    errorTitle: "Gagal Memuat Produk Siemens",
+    retryButton: "Coba Lagi",
+    noProductsTitle: "Produk Siemens Tidak Tersedia",
+    noProductsMessage: "Tidak ada produk Siemens yang tersedia saat ini.",
+    refreshButton: "Refresh Data",
+    stockAvailable: "Tersedia",
+    stockIndent: "Indent",
+    productCode: "Kode",
+    category: "Kategori",
+    categoryNotAvailable: "Tidak tersedia",
+    addToCart: "Add to Cart",
+    contactForStock: "Chat untuk Stock",
+    viewDetails: "Lihat Detail",
+    priceContactSales: "Hubungi Sales",
+    viewAll: "Lihat Semua Produk Siemens",
+    whatsappStockMessage: "Halo, saya ingin menanyakan stok produk"
+  },
+
+  // Siemens Award Section
+  siemensAward: {
+    badge: "Penghargaan Resmi",
+    title: "Award Distributor Terbaik Siemens",
+    subtitle: "Distributor Terpercaya dengan Standar Kualitas Internasional",
+    description: "Penghargaan resmi dari Siemens sebagai distributor terbaik. Prestasi ini mencerminkan komitmen kami dalam memberikan produk berkualitas tinggi dan layanan prima untuk mendukung kesuksesan setiap pelanggan.",
+    achievementTitle: "Pencapaian Terbaik Kami",
+    achievements: [
+      "Kualitas produk terjamin dengan standar internasional Siemens",
+      "Layanan purna jual terbaik di kelasnya dengan response time < 2 jam",
+      "Distribusi tepat waktu ke seluruh Indonesia dengan tingkat akurasi 99.8%",
+      "Tim technical support bersertifikat internasional Siemens"
+    ],
+    ctaPrimary: "Lihat Produk Siemens",
+    ctaSecondary: "Konsultasi Gratis",
+    imageAlt: "Sertifikat Penghargaan Siemens - Hokiindo sebagai Distributor Terbaik",
+    badgeText: "Best Distributor 2024",
+    statClients: "Happy Clients",
+    statYears: "Years Experience"
   },
 
   // Why Choose Section  
@@ -227,8 +306,8 @@ export default {
 
   // Products Section
   products: {
-    title: 'Produk',
-    subtitle: "Jelajahi koleksi lengkap produk Siemens kami",
+    title: 'Semua Produk',
+    subtitle: "Produk resmi, garansi terjamin, tim profesional",
     loading: 'Memuat produk...',
     loadingMore: 'Memuat produk lainnya...',
     allProductsLoaded: 'Semua produk telah dimuat',
@@ -237,6 +316,8 @@ export default {
     filter: 'Filter',
     category: 'Kategori',
     allCategories: 'Semua Kategori',
+    brand: 'Merek',
+    allBrands: 'Semua Merek',
     sort: 'Urutkan',
     sortByNameAsc: 'Nama A-Z',
     sortByNameDesc: 'Nama Z-A', 
@@ -253,7 +334,32 @@ export default {
     viewDetails: 'Lihat Detail',
     viewAll: "Lihat Semua",
     viewAllCategories: "Lihat Semua Kategori",
-    contactForPrice: "Hubungi untuk Harga"
+    contactForPrice: "Hubungi untuk Harga",
+    searchPlaceholder: "Cari produk...",
+    productCode: "Kode Produk",
+    stock: "Stok",
+    whatsappMessage: "Halo, saya tertarik dengan produk",
+    // Search Results
+    searchResults: "Hasil Pencarian",
+    allProducts: "Semua Produk",
+    searchResultsFor: "Pencarian untuk:",
+    productsFound: "produk ditemukan",
+    productsAvailable: "produk tersedia",
+    clearSearch: "Hapus Pencarian",
+    noSearchResults: "Tidak ada produk yang ditemukan",
+    searchSuggestion: "Tidak ada produk yang sesuai dengan pencarian",
+    tryDifferentKeywords: "Coba gunakan kata kunci yang berbeda atau ubah filter",
+    removeSearch: "Hapus Pencarian",
+    resetFilters: "Reset Filter",
+    searchKeyword: "kata kunci pencarian",
+    showingResultsFor: "Menampilkan hasil untuk",
+    totalResults: "Total hasil",
+    foundProducts: "produk ditemukan",
+    toggleFilter: "Buka/Tutup Filter",
+    productCount: "Jumlah Produk",
+    moreProducts: "Produk lainnya",
+    loadMore: "Muat Lebih Banyak",
+    indent: "Indent"
   },
 
   // Consultation
@@ -271,13 +377,38 @@ export default {
   common: {
     search: "Cari produk, kategori, atau brand...",
     searchMobile: "Cari produk...",
+    searchPopular: "Pencarian populer:",
+    searchButton: "Cari",
     close: "Tutup",
     loading: "Memuat...",
     error: "Terjadi kesalahan",
     back: "Kembali",
     contactUs: "Hubungi Tim Kami",
     companyTagline: "Distributor Siemens Terbaik dan Terpercaya",
-    cancel: "Batal"
+    cancel: "Batal",
+    save: "Simpan",
+    edit: "Edit",
+    delete: "Hapus",
+    submit: "Kirim",
+    next: "Selanjutnya",
+    previous: "Sebelumnya",
+    or: "atau",
+    and: "dan",
+    welcome: "Selamat datang",
+    login: "Masuk",
+    logout: "Keluar",
+    register: "Daftar",
+    yes: "Ya",
+    no: "Tidak",
+    viewAll: "Lihat Semua",
+    categories: "Kategori",
+    brands: "Merek",
+    noResults: "Tidak ada hasil",
+    success: "Berhasil",
+    required: "Wajib diisi",
+    optional: "Opsional",
+    copy: "Salin",
+    copied: "Disalin"
   },
 
   // Cart Section
@@ -300,12 +431,32 @@ export default {
     checkout: "Checkout",
     continueShopping: "Lanjut Belanja",
     freeShippingNote: "Gratis ongkos kirim",
-    freeConsultation: "Konsultasi gratis via WhatsApp"
+    freeConsultation: "Konsultasi gratis via WhatsApp",
+    startShopping: "Mulai Belanja",
+    quantity: "Jumlah",
+    price: "Harga",
+    update: "Perbarui",
+    proceedToCheckout: "Lanjut ke Checkout",
+    itemsCount: "item",
+    updateQuantity: "Perbarui Jumlah",
+    cartUpdated: "Keranjang diperbarui",
+    itemRemoved: "Item dihapus dari keranjang"
   },
 
   // Checkout Section
   checkout: {
     title: "Checkout",
+    customerInfo: "Informasi Pembeli",
+    orderSummary: "Ringkasan Pesanan",
+    paymentMethod: "Metode Pembayaran",
+    shippingMethod: "Metode Pengiriman",
+    placeOrder: "Buat Pesanan",
+    processing: "Memproses...",
+    orderNumber: "Nomor Pesanan",
+    orderSuccess: "Pesanan Berhasil!",
+    thankYou: "Terima kasih atas pesanan Anda",
+    
+    // Legacy fields
     shippingInfo: "Informasi Pengiriman",
     fullName: "Nama Lengkap",
     phone: "Nomor Telepon",
@@ -322,9 +473,111 @@ export default {
     postalCodePlaceholder: "12345",
     orderNotesPlaceholder: "Catatan khusus untuk pesanan (opsional)",
     orderViaMhatsApp: "Pesan via WhatsApp",
-    processing: "Memproses...",
     orderWillBeSent: "Pesanan akan dikirim melalui WhatsApp untuk konfirmasi",
-    required: "Wajib diisi"
+    required: "Wajib diisi",
+    
+    form: {
+      fullName: "Nama Lengkap",
+      email: "Email",
+      phone: "Nomor Telepon",
+      address: "Alamat Lengkap",
+      city: "Kota",
+      province: "Provinsi",
+      postalCode: "Kode Pos",
+      notes: "Catatan Pesanan",
+      addressPlaceholder: "Jalan, Nomor, RT/RW, Kelurahan, Kecamatan",
+      notesPlaceholder: "Catatan khusus untuk pesanan ini...",
+      required: "Wajib diisi",
+      optional: "Opsional"
+    },
+    
+    payment: {
+      bankTransfer: "Transfer Bank",
+      bca: "Bank BCA",
+      bcaFull: "Bank Central Asia (BCA)",
+      accountNumber: "Nomor Rekening",
+      accountName: "Atas Nama",
+      branch: "Cabang",
+      transferTo: "Transfer ke Rekening BCA",
+      instructions: "Instruksi Pembayaran",
+      paymentDetails: "Detail akan diberikan setelah konfirmasi pesanan via WhatsApp"
+    },
+    
+    shipping: {
+      chatShipping: "Chat untuk Ekspedisi",
+      chatDescription: "Konsultasi ekspedisi terbaik",
+      shippingNote: "Kami akan membantu memilih ekspedisi terbaik dan menghitung ongkir sesuai alamat Anda",
+      shippingCost: "Ongkir",
+      toBeCalculated: "Akan dihitung",
+      pendingConfirmation: "Menunggu konfirmasi"
+    },
+    
+    steps: {
+      information: "Informasi",
+      payment: "Pembayaran",
+      confirmation: "Selesai"
+    },
+    
+    nextSteps: {
+      title: "Langkah Selanjutnya",
+      step1: "Tunggu konfirmasi ongkir via WhatsApp",
+      step2: "Transfer total yang sudah termasuk ongkir",
+      step3: "Kirim bukti transfer via WhatsApp",
+      step4: "Pesanan akan diproses setelah pembayaran dikonfirmasi"
+    },
+    
+    whatsapp: {
+      orderVia: "Pesan via WhatsApp",
+      chatNow: "Chat WhatsApp",
+      confirmOrder: "Halo, saya ingin konfirmasi pesanan",
+      alreadyTransferred: "Saya Sudah Transfer"
+    },
+    
+    success: {
+      title: "Pesanan Berhasil!",
+      subtitle: "Terima kasih atas pesanan Anda",
+      whatNext: "Apa Selanjutnya?",
+      orderReceived: "Pesanan Anda telah diterima",
+      calculateShipping: "Tim kami akan menghitung ongkir dan menghubungi Anda",
+      makePayment: "Lakukan pembayaran sesuai total yang dikonfirmasi",
+      willShip: "Pesanan akan dikirim setelah pembayaran dikonfirmasi",
+      continueShopping: "Lanjut Belanja",
+      backToHome: "Kembali ke Beranda"
+    },
+    
+    validation: {
+      fillRequired: "Mohon lengkapi semua field yang wajib diisi",
+      invalidEmail: "Format email tidak valid",
+      invalidPhone: "Nomor telepon tidak valid"
+    },
+    
+    // Address management
+    address: {
+      selectAddress: "Pilih Alamat Pengiriman",
+      addAddress: "Tambah Alamat",
+      editAddress: "Edit Alamat",
+      deleteAddress: "Hapus Alamat",
+      setDefault: "Jadikan Default",
+      addressLabel: "Label Alamat",
+      recipientName: "Nama Penerima",
+      addressLine: "Alamat Lengkap",
+      defaultAddress: "Alamat Default",
+      noAddresses: "Belum Ada Alamat",
+      addFirstAddress: "Tambah Alamat Pertama",
+      loginRequired: "Silakan login untuk melanjutkan checkout",
+      saveAddress: "Simpan Alamat",
+      cancel: "Batal",
+      delete: "Hapus",
+      edit: "Edit",
+      labelPlaceholder: "Rumah, Kantor, Gudang, dll",
+      recipientPlaceholder: "Nama lengkap penerima",
+      phonePlaceholder: "08xx xxxx xxxx",
+      addressPlaceholder: "Jalan, Nomor, RT/RW, Kelurahan, Kecamatan",
+      cityPlaceholder: "Nama kota",
+      provincePlaceholder: "Nama provinsi",
+      postalCodePlaceholder: "12345",
+      confirmDelete: "Apakah Anda yakin ingin menghapus alamat ini?"
+    }
   },
 
   // Product Detail Section
@@ -351,7 +604,27 @@ export default {
     inStock: "Tersedia",
     outOfStock: "Stok Habis",
     maxQuantity: "Maksimal",
-    minQuantity: "Minimal 1"
+    minQuantity: "Minimal 1",
+    descriptionPlaceholder: "Deskripsi produk akan segera diberikan oleh tim kami",
+    reviews: "Ulasan Produk",
+    writeReview: "Tulis Ulasan",
+    submitReview: "Kirim Ulasan",
+    loginToReview: "Masuk untuk memberikan ulasan",
+    noReviews: "Belum ada ulasan untuk produk ini",
+    beFirstReviewer: "Jadilah yang pertama memberikan ulasan!",
+    rating: "Rating",
+    reviewText: "Ulasan Anda",
+    reviewPlaceholder: "Bagikan pengalaman Anda dengan produk ini...",
+    submittingReview: "Mengirim ulasan...",
+    reviewSubmitted: "Ulasan berhasil dikirim!",
+    reviewError: "Gagal mengirim ulasan",
+    averageRating: "Rating Rata-rata",
+    totalReviews: "ulasan",
+    helpful: "Membantu",
+    notHelpful: "Tidak Membantu",
+    reviewDate: "Tanggal Ulasan",
+    adding: "Menambahkan...",
+    addedToCart: "Ditambahkan ke Keranjang!"
   },
 
   // Authentication Section
@@ -393,14 +666,12 @@ export default {
     enterPasswordPrompt: "Masukkan password Anda",
     continue: "Lanjutkan",
     change: "Ubah",
-    or: "atau",
     redirecting: "Mengalihkan...",
     loginErrorGeneral: "Terjadi kesalahan saat login",
     googleLoginError: "Gagal login dengan Google",
     googleLoginErrorGeneral: "Terjadi kesalahan saat login dengan Google",
     byLoggingIn: "Dengan log in, kamu menyetujui",
     privacyPolicy: "Kebijakan Privasi",
-    and: "dan",
     termsConditions: "Syarat & Ketentuan",
     allRightsReserved: "Semua Hak Dilindungi",
     siemensDistributor: "Distributor Resmi SIEMENS",
@@ -428,7 +699,11 @@ export default {
     sending: "Mengirim...",
     resetPasswordSuccess: "Email reset password telah dikirim! Silakan cek kotak masuk Anda.",
     resetPasswordError: "Gagal mengirim email reset password",
-    resetPasswordErrorGeneral: "Terjadi kesalahan saat mengirim email reset password"
+    resetPasswordErrorGeneral: "Terjadi kesalahan saat mengirim email reset password",
+    invalidCredentials: "Email atau password salah",
+    accountNotVerified: "Akun belum terverifikasi",
+    verifyEmail: "Verifikasi Email",
+    resendVerification: "Kirim Ulang Verifikasi"
   },
 
   // Privacy Policy
@@ -624,5 +899,50 @@ export default {
         "Alamat: Jl. Industri Raya No. 123, Jakarta 12345, Indonesia"
       ]
     }
+  },
+
+  // Contact Section
+  contact: {
+    title: "Hubungi Kami",
+    subtitle: "Kami siap membantu kebutuhan Anda",
+    getInTouch: "Hubungi Kami",
+    address: "Alamat",
+    phone: "Telepon",
+    email: "Email",
+    workingHours: "Jam Kerja",
+    monday: "Senin",
+    friday: "Jumat",
+    saturday: "Sabtu",
+    sunday: "Minggu",
+    closed: "Tutup",
+    sendMessage: "Kirim Pesan",
+    name: "Nama",
+    subject: "Subjek",
+    message: "Pesan",
+    send: "Kirim",
+    messageSent: "Pesan berhasil dikirim",
+    messageError: "Gagal mengirim pesan"
+  },
+
+  // Footer Section
+  footer: {
+    company: "Perusahaan",
+    about: "Tentang Kami",
+    careers: "Karir",
+    blog: "Blog",
+    products: "Produk",
+    categories: "Kategori",
+    brands: "Merek",
+    support: "Dukungan",
+    contact: "Kontak",
+    faq: "FAQ",
+    shipping: "Pengiriman",
+    returns: "Pengembalian",
+    social: "Media Sosial",
+    newsletter: "Newsletter",
+    subscribe: "Berlangganan",
+    enterEmail: "Masukkan email Anda",
+    copyright: "Hak Cipta",
+    allRightsReserved: "Semua hak dilindungi"
   }
 }; 

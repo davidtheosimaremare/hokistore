@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Search - Hokistore</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #DC2626;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            color: #374151;
+            margin-bottom: 15px;
+        }
+        button {
+            background: #DC2626;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #B91C1C;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #059669; }
+        .error { color: #DC2626; }
+        .info { color: #0891B2; }
+        .link {
+            color: #DC2626;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Fitur Pencarian Hokistore</h1>
+        
+        <div class="test-section">
+            <h3>1. Test Database Connection</h3>
+            <p>Test koneksi ke database Supabase dan ambil sample produk</p>
+            <button onclick="testDatabase()">Test Database</button>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Test Search API</h3>
+            <p>Test pencarian produk dengan keyword yang berbeda</p>
+            <button onclick="testSearch('SIMATIC')">Search "SIMATIC"</button>
+            <button onclick="testSearch('Siemens')">Search "Siemens"</button>
+            <button onclick="testSearch('CPU')">Search "CPU"</button>
+            <button onclick="testSearch('PLC')">Search "PLC"</button>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test Product Detail</h3>
+            <p>Test halaman detail produk</p>
+            <button onclick="openProductDetail('b1309c28-e470-4358-8758-ff07752bb648')">Open SIMATIC S7-1200 CPU</button>
+            <button onclick="openProductDetail('7e873a53-6ad7-42e9-8b54-06e6dde759b2')">Open SIMATIC LOGO! 8</button>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Test Homepage Search</h3>
+            <p>Test fitur pencarian di homepage</p>
+            <a href="http://localhost:3000" class="link" target="_blank">Buka Homepage → Test Search Box</a>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            resultsDiv.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        async function testDatabase() {
+            clearResults();
+            log('🔄 Testing database connection...', 'info');
+            
+            try {
+                const response = await fetch('/api/test-search');
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('✅ Database connection successful!', 'success');
+                    log(`📊 Statistics:`, 'info');
+                    log(`   - Total products: ${data.stats.total}`, 'info');
+                    log(`   - Active products: ${data.stats.active}`, 'info');
+                    log(`   - Published products: ${data.stats.published}`, 'info');
+                    log(`   - Available online: ${data.stats.available_online}`, 'info');
+                    log(`   - Ready for search: ${data.stats.ready_for_search}`, 'info');
+                    
+                    if (data.sampleProducts && data.sampleProducts.length > 0) {
+                        log(`\n📦 Sample products:`, 'info');
+                        data.sampleProducts.forEach((product, index) => {
+                            log(`   ${index + 1}. ${product.name} - ${product.category} - Stock: ${product.stock_quantity}`, 'info');
+                        });
+                    }
+                } else {
+                    log(`❌ Database test failed: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log(`💥 Error testing database: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSearch(keyword) {
+            clearResults();
+            log(`🔍 Searching for "${keyword}"...`, 'info');
+            
+            try {
+                const response = await fetch(`/api/test-search?q=${encodeURIComponent(keyword)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    log(`✅ Search successful for "${keyword}"!`, 'success');
+                    
+                    if (data.searchResults && data.searchResults.length > 0) {
+                        log(`\n🎯 Found ${data.searchResults.length} products:`, 'info');
+                        data.searchResults.forEach((product, index) => {
+                            const stockText = product.stock_quantity > 0 ? `Stock: ${product.stock_quantity}` : 'Out of stock';
+                            const priceText = product.price > 0 ? `Rp ${product.price.toLocaleString()}` : 'No price';
+                            log(`   ${index + 1}. ${product.name}`, 'info');
+                            log(`      Category: ${product.category} | ${priceText} | ${stockText}`, 'info');
+                            log(`      Status: ${product.status} | Published: ${product.is_published}`, 'info');
+                        });
+                    } else {
+                        log(`⚠️ No products found for "${keyword}"`, 'error');
+                    }
+                } else {
+                    log(`❌ Search failed: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log(`💥 Error during search: ${error.message}`, 'error');
+            }
+        }
+
+        function openProductDetail(productId) {
+            const url = `http://localhost:3000/product/${productId}`;
+            log(`🔗 Opening product detail: ${url}`, 'info');
+            window.open(url, '_blank');
+        }
+
+        // Auto-test on load
+        window.onload = function() {
+            log('🚀 Test page loaded. Click buttons above to test functionality.', 'info');
+        };
+    </script>
+</body>
+</html> 

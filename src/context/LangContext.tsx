@@ -45,9 +45,57 @@ interface LanguageData {
       alt: string;
     }>;
   };
+  aboutHokiindo: {
+    title: string;
+    subtitle: string;
+    description: string;
+    detailButton: string;
+    features: Array<{
+      title: string;
+      description: string;
+      icon: string;
+    }>;
+  };
   featuredProducts: {
     title: string;
     subtitle: string;
+  };
+  siemensProducts: {
+    title: string;
+    subtitle: string;
+    availableProducts: string;
+    loading: string;
+    loadingWait: string;
+    errorTitle: string;
+    retryButton: string;
+    noProductsTitle: string;
+    noProductsMessage: string;
+    refreshButton: string;
+    stockAvailable: string;
+    stockIndent: string;
+    productCode: string;
+    category: string;
+    categoryNotAvailable: string;
+    addToCart: string;
+    contactForStock: string;
+    viewDetails: string;
+    priceContactSales: string;
+    viewAll: string;
+    whatsappStockMessage: string;
+  };
+  siemensAward: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    achievementTitle: string;
+    achievements: Array<string>;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    imageAlt: string;
+    badgeText: string;
+    statClients: string;
+    statYears: string;
   };
   whyChoose: {
     title: string;
@@ -87,12 +135,15 @@ interface LanguageData {
   common: {
     search: string;
     searchMobile: string;
+    searchPopular: string;
+    searchButton: string;
     close: string;
     loading: string;
     error: string;
     back: string;
     contactUs: string;
     companyTagline: string;
+    cancel: string;
   };
   products: {
     title: string;
@@ -122,6 +173,32 @@ interface LanguageData {
     changeFilter: string;
     loadingMore: string;
     allProductsLoaded: string;
+    searchPlaceholder: string;
+    brand: string;
+    allBrands: string;
+    productCode: string;
+    stock: string;
+    whatsappMessage: string;
+    searchResults: string;
+    allProducts: string;
+    searchResultsFor: string;
+    productsFound: string;
+    productsAvailable: string;
+    clearSearch: string;
+    noSearchResults: string;
+    searchSuggestion: string;
+    tryDifferentKeywords: string;
+    removeSearch: string;
+    resetFilters: string;
+    searchKeyword: string;
+    showingResultsFor: string;
+    totalResults: string;
+    foundProducts: string;
+    toggleFilter: string;
+    productCount: string;
+    moreProducts: string;
+    loadMore: string;
+    indent: string;
   };
   cart: {
     title: string;
@@ -146,11 +223,123 @@ interface LanguageData {
   };
   checkout: {
     title: string;
+    customerInfo: string;
+    orderSummary: string;
+    paymentMethod: string;
+    shippingMethod: string;
+    placeOrder: string;
+    processing: string;
+    orderNumber: string;
+    orderSuccess: string;
+    thankYou: string;
+    
+    form: {
+      fullName: string;
+      email: string;
+      phone: string;
+      address: string;
+      city: string;
+      province: string;
+      postalCode: string;
+      notes: string;
+      addressPlaceholder: string;
+      notesPlaceholder: string;
+      required: string;
+      optional: string;
+    };
+    
+    payment: {
+      bankTransfer: string;
+      bca: string;
+      bcaFull: string;
+      accountNumber: string;
+      accountName: string;
+      branch: string;
+      transferTo: string;
+      instructions: string;
+      paymentDetails: string;
+    };
+    
+    shipping: {
+      chatShipping: string;
+      chatDescription: string;
+      shippingNote: string;
+      shippingCost: string;
+      toBeCalculated: string;
+      pendingConfirmation: string;
+    };
+    
+    steps: {
+      information: string;
+      payment: string;
+      confirmation: string;
+    };
+    
+    nextSteps: {
+      title: string;
+      step1: string;
+      step2: string;
+      step3: string;
+      step4: string;
+    };
+    
+    whatsapp: {
+      orderVia: string;
+      chatNow: string;
+      confirmOrder: string;
+      alreadyTransferred: string;
+    };
+    
+    success: {
+      title: string;
+      subtitle: string;
+      whatNext: string;
+      orderReceived: string;
+      calculateShipping: string;
+      makePayment: string;
+      willShip: string;
+      continueShopping: string;
+      backToHome: string;
+    };
+    
+    validation: {
+      fillRequired: string;
+      invalidEmail: string;
+      invalidPhone: string;
+    };
+    
+    address: {
+      selectAddress: string;
+      addAddress: string;
+      editAddress: string;
+      deleteAddress: string;
+      setDefault: string;
+      addressLabel: string;
+      recipientName: string;
+      addressLine: string;
+      defaultAddress: string;
+      noAddresses: string;
+      addFirstAddress: string;
+      loginRequired: string;
+      saveAddress: string;
+      cancel: string;
+      delete: string;
+      edit: string;
+      labelPlaceholder: string;
+      recipientPlaceholder: string;
+      phonePlaceholder: string;
+      addressPlaceholder: string;
+      cityPlaceholder: string;
+      provincePlaceholder: string;
+      postalCodePlaceholder: string;
+      confirmDelete: string;
+    };
+    
+    // Legacy fields for backward compatibility
     shippingInfo: string;
     fullName: string;
     phone: string;
     email: string;
-    address: string;
     city: string;
     postalCode: string;
     orderNotes: string;
@@ -162,7 +351,6 @@ interface LanguageData {
     postalCodePlaceholder: string;
     orderNotesPlaceholder: string;
     orderViaMhatsApp: string;
-    processing: string;
     orderWillBeSent: string;
     required: string;
   };
@@ -190,6 +378,26 @@ interface LanguageData {
     outOfStock: string;
     maxQuantity: string;
     minQuantity: string;
+    descriptionPlaceholder: string;
+    reviews: string;
+    writeReview: string;
+    submitReview: string;
+    loginToReview: string;
+    noReviews: string;
+    beFirstReviewer: string;
+    rating: string;
+    reviewText: string;
+    reviewPlaceholder: string;
+    submittingReview: string;
+    reviewSubmitted: string;
+    reviewError: string;
+    averageRating: string;
+    totalReviews: string;
+    helpful: string;
+    notHelpful: string;
+    reviewDate: string;
+    adding: string;
+    addedToCart: string;
   };
   auth: {
     loginTitle: string;

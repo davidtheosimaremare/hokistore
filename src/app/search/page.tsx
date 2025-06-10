@@ -11,25 +11,55 @@ import {
   MessageCircle,
   Loader2,
   ArrowLeft,
-  ChevronDown
+  ChevronDown,
+  Package,
+  AlertTriangle
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { AccurateApiService, AccurateProduct } from '@/services/accurateApi';
+import { supabase } from '@/lib/supabase';
 import { formatRupiah } from '@/utils/formatters';
+import { generateSEOProductUrl } from '@/utils/seoHelpers';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 
 type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc';
 type ViewMode = 'grid' | 'list';
 
+// Interface for Supabase products
+interface SupabaseProduct {
+  id: number
+  name: string
+  description?: string
+  short_description?: string
+  price: number
+  original_price?: number
+  stock_quantity: number
+  unit: string
+  category: string
+  sku?: string
+  accurate_code?: string
+  brand?: string
+  status: string
+  is_published: boolean
+  is_available_online: boolean
+  admin_thumbnail?: string
+}
+
+interface ProductCardProps {
+  product: SupabaseProduct;
+  viewMode: ViewMode;
+  onAddToCart: (product: SupabaseProduct) => void;
+  getWhatsAppLink: (product: SupabaseProduct) => string;
+}
+
 const SearchPageContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get('query') || '';
   
-  const [products, setProducts] = useState<AccurateProduct[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<AccurateProduct[]>([]);
+  const [products, setProducts] = useState<SupabaseProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<SupabaseProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
@@ -40,7 +70,7 @@ const SearchPageContent = () => {
   
   const { addToCart } = useCart();
 
-  // Load search results
+  // Load search results from Supabase
   const performSearch = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setProducts([]);
@@ -54,31 +84,41 @@ const SearchPageContent = () => {
       setLoading(true);
       setError(null);
       
-      console.log('🔍 Searching for:', searchQuery);
+      console.log('🔍 [SEARCH-PAGE] Searching products in Supabase for:', searchQuery);
       
-      // Use comprehensive search
-      const searchResults = await AccurateApiService.searchProductsComprehensive(searchQuery);
+      // Search products in Supabase database - only name and category (case insensitive)
+      const { data: searchResults, error: searchError } = await supabase
+        .from('products')
+        .select('*')
+        .or(`name.ilike.%${searchQuery}%,category.ilike.%${searchQuery}%`)
+        .eq('is_published', true)
+        .eq('is_available_online', true)
+        .eq('status', 'active')
+        .order('name', { ascending: true });
+
+      if (searchError) {
+        throw new Error(searchError.message);
+      }
+
+      console.log(`✅ [SEARCH-PAGE] Found ${searchResults?.length || 0} products in Supabase`);
+
+      const results = searchResults || [];
+      setProducts(results);
       
-      setProducts(searchResults);
-      
-      // Extract unique categories from search results
-      const uniqueCategories = Array.from(
-        new Set(
-          searchResults
-            .map(product => product.itemCategory?.name)
-            .filter(Boolean) as string[]
-        )
-      ).sort();
-      
+      // Extract unique categories
+      const uniqueCategories = [...new Set(
+        results
+          .map(p => p.category)
+          .filter(Boolean)
+          .filter((name): name is string => typeof name === 'string')
+      )];
       setCategories(uniqueCategories);
       
-      console.log(`✅ Found ${searchResults.length} products for query: ${searchQuery}`);
-      
-    } catch (err) {
-      console.error('❌ Error searching products:', err);
-      setError(err instanceof Error ? err.message : 'Failed to search products');
+    } catch (error: any) {
+      console.error('❌ [SEARCH-PAGE] Error searching products:', error);
+      setError(error.message || 'Gagal mencari produk');
       setProducts([]);
-      setFilteredProducts([]);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
@@ -91,7 +131,7 @@ const SearchPageContent = () => {
     // Apply category filter
     if (selectedCategory) {
       filtered = filtered.filter(
-        product => product.itemCategory?.name === selectedCategory
+        product => product.category === selectedCategory
       );
     }
 
@@ -103,9 +143,9 @@ const SearchPageContent = () => {
         case 'name-desc':
           return b.name.localeCompare(a.name);
         case 'price-asc':
-          return (a.unitPrice || 0) - (b.unitPrice || 0);
+          return (a.price || 0) - (b.price || 0);
         case 'price-desc':
-          return (b.unitPrice || 0) - (a.unitPrice || 0);
+          return (b.price || 0) - (a.price || 0);
         default:
           return 0;
       }
@@ -141,12 +181,22 @@ const SearchPageContent = () => {
   }, [filterAndSortProducts]);
 
   // Handle add to cart
-  const handleAddToCart = (product: AccurateProduct) => {
-    addToCart(product, 1);
+  const handleAddToCart = (product: SupabaseProduct) => {
+    // Convert Supabase product to cart format
+    const cartItem = {
+      id: product.id.toString(),
+      name: product.name,
+      price: product.price || 0,
+      image: product.admin_thumbnail,
+      unit: product.unit,
+      brand: product.brand,
+      category: product.category
+    };
+    addToCart(cartItem, 1);
   };
 
   // Get WhatsApp link for out of stock products
-  const getWhatsAppLink = (product: AccurateProduct) => {
+  const getWhatsAppLink = (product: SupabaseProduct) => {
     const message = `Halo, saya ingin menanyakan ketersediaan stok untuk produk: ${product.name} (ID: ${product.id})`;
     return `https://wa.me/628111086180?text=${encodeURIComponent(message)}`;
   };
@@ -190,7 +240,7 @@ const SearchPageContent = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Cari produk..."
+                  placeholder="Cari berdasarkan nama atau kategori produk..."
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
@@ -372,10 +422,10 @@ const SearchPageContent = () => {
 
 // Product Card Component (same as in products page)
 interface ProductCardProps {
-  product: AccurateProduct;
+  product: SupabaseProduct;
   viewMode: ViewMode;
-  onAddToCart: (product: AccurateProduct) => void;
-  getWhatsAppLink: (product: AccurateProduct) => string;
+  onAddToCart: (product: SupabaseProduct) => void;
+  getWhatsAppLink: (product: SupabaseProduct) => string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ 
@@ -384,7 +434,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart, 
   getWhatsAppLink 
 }) => {
-  const hasStock = (product.stock || product.balance || 0) > 0;
+  const hasStock = (product.stock_quantity || 0) > 0;
 
   if (viewMode === 'list') {
     return (
@@ -407,24 +457,24 @@ const ProductCard: React.FC<ProductCardProps> = ({
           
           <div className="flex-1 min-w-0">
             <Link 
-              href={`/product/${product.id}`}
+              href={generateSEOProductUrl(product.id, product.name)}
               className="block hover:text-red-600 transition-colors"
             >
               <h3 className="font-semibold text-gray-900 truncate">{product.name}</h3>
             </Link>
             
-            {product.shortName && (
-              <p className="text-sm text-gray-500 mt-1">{product.shortName}</p>
+            {product.short_description && (
+              <p className="text-sm text-gray-500 mt-1">{product.short_description}</p>
             )}
             
             <div className="flex items-center space-x-2 mt-2">
               <span className="text-lg font-bold text-red-600">
-                {formatRupiah(product.unitPrice || 0)}
+                {formatRupiah(product.price || 0)}
               </span>
               
-              {product.itemCategory?.name && (
+              {product.category && (
                 <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
-                  {product.itemCategory.name}
+                  {product.category}
                 </span>
               )}
             </div>
@@ -452,7 +502,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
             
             <Link
-              href={`/product/${product.id}`}
+              href={generateSEOProductUrl(product.id, product.name)}
               className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-center text-sm"
             >
               Detail
@@ -483,7 +533,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       
       <div className="p-4">
         <Link 
-          href={`/product/${product.id}`}
+          href={generateSEOProductUrl(product.id, product.name)}
           className="block hover:text-red-600 transition-colors"
         >
           <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2">
@@ -491,19 +541,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </h3>
         </Link>
         
-        {product.shortName && (
-          <p className="text-sm text-gray-500 mb-2 line-clamp-1">{product.shortName}</p>
+        {product.short_description && (
+          <p className="text-sm text-gray-500 mb-2 line-clamp-1">{product.short_description}</p>
         )}
         
-        {product.itemCategory?.name && (
+        {product.category && (
           <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs mb-3">
-            {product.itemCategory.name}
+            {product.category}
           </span>
         )}
         
         <div className="mb-4">
           <span className="text-xl font-bold text-red-600">
-            {formatRupiah(product.unitPrice || 0)}
+            {formatRupiah(product.price || 0)}
           </span>
         </div>
         
@@ -529,7 +579,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
           
           <Link
-            href={`/product/${product.id}`}
+            href={generateSEOProductUrl(product.id, product.name)}
             className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors text-center block"
           >
             Lihat Detail

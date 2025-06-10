@@ -37,7 +37,7 @@ const useLanguage = () => {
 // Language Provider Component
 const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState('id');
-  const [translations, setTranslations] = useState(idLang);
+  const [translations, setTranslations] = useState<any>(idLang);
 
   useEffect(() => {
     // Load language from localStorage
@@ -127,12 +127,24 @@ function LoginContent() {
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
 
+  // Get redirect parameter from URL
+  const [redirectUrl, setRedirectUrl] = useState<string>('/dashboard');
+
+  useEffect(() => {
+    // Get redirect parameter from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get('redirect');
+    if (redirect) {
+      setRedirectUrl(redirect);
+    }
+  }, []);
+
   // Redirect if already logged in
   useEffect(() => {
     if (user && !authLoading) {
-      router.push('/dashboard');
+      router.push(redirectUrl);
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, redirectUrl]);
 
   const validateEmail = () => {
     const newErrors: {[key: string]: string} = {};
@@ -186,7 +198,7 @@ function LoginContent() {
         setMessage({ type: 'error', text: t.auth.loginError });
       } else {
         setMessage({ type: 'success', text: t.auth.loginSuccess + '! ' + t.auth.redirecting });
-        setTimeout(() => router.push('/dashboard'), 1000);
+        setTimeout(() => router.push(redirectUrl), 1000);
       }
     } catch (error) {
       setMessage({ type: 'error', text: t.auth.loginErrorGeneral });
@@ -216,6 +228,8 @@ function LoginContent() {
       const { error } = await signInWithGoogle();
       if (error) {
         setMessage({ type: 'error', text: t.auth.googleLoginError });
+      } else {
+        // Redirect will be handled by the useEffect hook when user state changes
       }
     } catch (error) {
       setMessage({ type: 'error', text: t.auth.googleLoginErrorGeneral });
