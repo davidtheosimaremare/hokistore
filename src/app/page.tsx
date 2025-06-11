@@ -533,7 +533,6 @@ export default function Home() {
                             alt="Siemens Award Certificate"
                             className="w-full h-full object-cover object-center transition-transform duration-[800ms] ease-in-out"
                             style={{ 
-                              filter: 'brightness(0.6)',
                               transform: isActive ? 'scale(1)' : 'scale(1.05)',
                               objectPosition: 'center 30%'
                             }}
@@ -545,18 +544,16 @@ export default function Home() {
                           className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[800ms] ease-in-out"
                           style={{ 
                             backgroundImage: `url(${slide.image})`,
-                            filter: 'brightness(0.6)',
                             transform: isActive ? 'scale(1)' : 'scale(1.05)'
                           }}
                         />
                       )}
                       
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+                      {/* Overlay only for bottom half - full width */}
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 via-black/70 to-transparent" />
                       
                       <div className="relative z-10 flex items-end h-full p-4 sm:p-6 md:p-8">
                         <div className="w-full max-w-4xl mx-auto pb-8 sm:pb-12 md:pb-16">
-
-                          
                           <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                             <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight transition-all duration-1000 ${
                               isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
@@ -1300,146 +1297,6 @@ export default function Home() {
               </Link>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Siemens Award Banner Section - HIDDEN */}
-      <section className="hidden w-full py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 relative overflow-hidden">
-        {/* Background Patterns */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-40 h-40 bg-yellow-400 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-60 h-60 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-yellow-300 rounded-full blur-2xl"></div>
-          <div className="absolute bottom-10 right-10 w-20 h-20 bg-blue-300 rounded-full blur-xl"></div>
-        </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 border border-white/20 rounded-full"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 border border-white/10 rounded-full"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            
-            {/* Left Content */}
-            <div className="text-white space-y-6 order-2 lg:order-1">
-              <div>
-                <div className="flex items-center space-x-3 mb-4">
-                  <Award className="w-8 h-8 text-yellow-400" />
-                  <span className="bg-yellow-400 text-blue-900 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
-                    {lang.siemensAward?.badge || "Official Recognition"}
-                  </span>
-                </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                  {lang.siemensAward?.title || "Penghargaan Prestasi Terbaik dari Siemens"}
-                </h2>
-                <p className="text-xl md:text-2xl text-blue-100 font-light mb-6">
-                  {lang.siemensAward?.subtitle || "Distributor Terpercaya dengan Kualitas Terjamin"}
-                </p>
-                <div className="w-24 h-1 bg-yellow-400 mb-8"></div>
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-lg leading-relaxed text-blue-50">
-                  {lang.siemensAward?.description || "Kami dengan bangga menerima penghargaan sebagai distributor terbaik dari Siemens. Prestasi ini mencerminkan komitmen kami dalam memberikan produk berkualitas tinggi dan layanan terdepan kepada setiap pelanggan."}
-                </p>
-                
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                  <h4 className="font-bold text-xl mb-4 flex items-center">
-                    <Star className="w-6 h-6 text-yellow-400 mr-3" />
-                    {lang.siemensAward?.achievementTitle || "Pencapaian Terbaik"}
-                  </h4>
-                  <ul className="space-y-3">
-                    {(lang.siemensAward?.achievements || [
-                      "Kualitas produk terjamin dengan standar internasional",
-                      "Layanan purna jual terbaik di kelasnya", 
-                      "Distribusi tepat waktu dan terpercaya",
-                      "Tim technical support berpengalaman"
-                    ]).map((achievement: string, index: number) => (
-                      <li key={index} className="flex items-start space-x-3">
-                        <CheckCircle className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-blue-100">{achievement}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                <Link 
-                  href="/products"
-                  className="inline-flex items-center justify-center bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-yellow-400/25 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 text-lg"
-                >
-                  <span>{lang.siemensAward?.ctaPrimary || "Lihat Produk Siemens"}</span>
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
-                <a
-                  href="https://wa.me/628111086180"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border-2 border-white/30 hover:border-white/50 font-bold px-8 py-4 rounded-2xl transition-all duration-300 transform hover:-translate-y-1 text-lg"
-                >
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  <span>{lang.siemensAward?.ctaSecondary || "Konsultasi Gratis"}</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Right Image */}
-            <div className="relative order-1 lg:order-2">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                <img 
-                  src="/images/asset-web/banner-pakbob.png"
-                  alt={lang.siemensAward?.imageAlt || "Siemens Award Certificate - Hokiindo as Best Distributor"}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "https://placehold.co/600x800/1e40af/ffffff?text=Award+Certificate";
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-                
-                {/* Floating Award Badge */}
-                <div className="absolute top-6 right-6 bg-yellow-400 text-blue-900 p-4 rounded-xl shadow-xl">
-                  <Award className="w-8 h-8 mb-2 mx-auto" />
-                  <div className="text-xs font-bold text-center uppercase tracking-wider">
-                    {lang.siemensAward?.badgeText || "Best Distributor 2024"}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Floating Stats Cards */}
-              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 border border-gray-100">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Users className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900">1000+</div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide">
-                      {lang.siemensAward?.statClients || "Happy Clients"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -top-6 -left-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl shadow-xl p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                    <Clock className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">15+</div>
-                    <div className="text-xs text-blue-100 uppercase tracking-wide">
-                      {lang.siemensAward?.statYears || "Years Experience"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
