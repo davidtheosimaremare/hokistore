@@ -13,6 +13,11 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Hokiindo Raya - Your Trusted Solution Partner",
   description: "Distributor resmi produk Siemens terlengkap di Indonesia. Automation, Power Distribution, Motor & Drives, Safety Systems. Your trusted solution partner for electrical and industrial needs.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+    shortcut: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -22,6 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
+      <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="shortcut icon" href="/favicon.png" />
+      </head>
       <body className={`${montserrat.variable} font-sans antialiased`}>
         <ClientWrapper>
           {children}

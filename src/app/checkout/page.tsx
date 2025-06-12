@@ -486,11 +486,11 @@ const CheckoutPage = () => {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           <div className="flex justify-center items-center py-12">
             <div className="flex items-center space-x-3">
               <Loader2 className="w-6 h-6 animate-spin text-red-600" />
-              <span className="text-gray-600">Memeriksa autentikasi...</span>
+              <span className="text-gray-600 text-sm sm:text-base">Memeriksa autentikasi...</span>
             </div>
           </div>
         </div>
@@ -503,14 +503,14 @@ const CheckoutPage = () => {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           <div className="text-center py-12">
-            <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Keranjang Kosong</h3>
-            <p className="text-gray-600 mb-6">Tambahkan produk ke keranjang untuk melanjutkan checkout</p>
+            <ShoppingCart className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Keranjang Kosong</h3>
+            <p className="text-gray-600 mb-6 text-sm sm:text-base px-4">Tambahkan produk ke keranjang untuk melanjutkan checkout</p>
             <Link
               href="/products"
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors touch-manipulation min-h-[44px] text-sm sm:text-base"
             >
               Lihat Produk
             </Link>
@@ -525,46 +525,49 @@ const CheckoutPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Progress Steps */}
+      {/* Progress Steps - Mobile optimized */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-red-600 transition-colors"
+              className="flex items-center text-gray-600 hover:text-red-600 transition-colors touch-manipulation min-h-[44px] px-2 -ml-2"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              {lang.common.back}
+              <span className="text-sm sm:text-base">{lang.common.back}</span>
             </button>
             
-            <div className="flex items-center space-x-4">
-              <div className={`flex items-center space-x-2 ${currentStep === 'address' ? 'text-red-600' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${currentStep === 'address' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>1</div>
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className={`flex items-center space-x-1 sm:space-x-2 ${currentStep === 'address' ? 'text-red-600' : 'text-gray-400'}`}>
+                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold ${currentStep === 'address' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}>1</div>
                 <span className="hidden sm:inline text-sm font-medium">Alamat Pengiriman</span>
+                <span className="sm:hidden text-xs font-medium">Alamat</span>
               </div>
-              <div className="w-8 h-px bg-gray-300"></div>
-              <div className={`flex items-center space-x-2 ${currentStep === 'confirmation' ? 'text-green-600' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${currentStep === 'confirmation' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>2</div>
+              <div className="w-4 sm:w-8 h-px bg-gray-300"></div>
+              <div className={`flex items-center space-x-1 sm:space-x-2 ${currentStep === 'confirmation' ? 'text-green-600' : 'text-gray-400'}`}>
+                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold ${currentStep === 'confirmation' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}>2</div>
                 <span className="hidden sm:inline text-sm font-medium">Konfirmasi</span>
+                <span className="sm:hidden text-xs font-medium">Selesai</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         
         {/* Step 1: Address Selection */}
         {currentStep === 'address' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="space-y-6 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
             
             {/* Address Selection */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                    <MapPin className="w-6 h-6 mr-2 text-red-600" />
-                    Pilih Alamat Pengiriman
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center">
+                    <MapPin className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-red-600" />
+                    <span className="hidden sm:inline">Pilih Alamat Pengiriman</span>
+                    <span className="sm:hidden">Alamat Pengiriman</span>
                   </h2>
                   <button
                     onClick={() => {
@@ -572,7 +575,7 @@ const CheckoutPage = () => {
                       setEditingAddress(null);
                       setShowAddressForm(true);
                     }}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2"
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 sm:py-3 rounded-lg font-medium flex items-center justify-center space-x-2 touch-manipulation min-h-[44px] text-sm sm:text-base w-full sm:w-auto"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Tambah Alamat</span>
@@ -582,14 +585,14 @@ const CheckoutPage = () => {
                 {/* Error State */}
                 {addressError && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                    <div className="flex items-center space-x-3">
-                      <AlertCircle className="w-5 h-5 text-red-600" />
-                      <div>
-                        <p className="text-red-800 font-medium">Gagal memuat alamat</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                      <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-red-800 font-medium text-sm sm:text-base">Gagal memuat alamat</p>
                         <p className="text-red-700 text-sm">{addressError}</p>
                         <button
                           onClick={loadAddresses}
-                          className="text-red-600 hover:text-red-700 text-sm font-medium mt-1"
+                          className="text-red-600 hover:text-red-700 text-sm font-medium mt-1 touch-manipulation"
                         >
                           Coba Lagi
                         </button>
@@ -601,18 +604,18 @@ const CheckoutPage = () => {
                 {loadingAddresses ? (
                   <div className="flex justify-center py-8">
                     <div className="flex items-center space-x-3">
-                      <Loader2 className="w-8 h-8 animate-spin text-red-600" />
-                      <span className="text-gray-600">Memuat alamat...</span>
+                      <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin text-red-600" />
+                      <span className="text-gray-600 text-sm sm:text-base">Memuat alamat...</span>
                     </div>
                   </div>
                 ) : addresses.length === 0 ? (
                   <div className="text-center py-8">
                     <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Belum Ada Alamat</h3>
-                    <p className="text-gray-600 mb-4">Tambahkan alamat pengiriman untuk melanjutkan checkout</p>
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Belum Ada Alamat</h3>
+                    <p className="text-gray-600 mb-4 text-sm sm:text-base px-4">Tambahkan alamat pengiriman untuk melanjutkan checkout</p>
                     <button
                       onClick={() => setShowAddressForm(true)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium"
+                      className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium touch-manipulation min-h-[44px]"
                     >
                       Tambah Alamat Pertama
                     </button>
@@ -622,7 +625,7 @@ const CheckoutPage = () => {
                     {addresses.map((address) => (
                       <div
                         key={address.id}
-                        className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                        className={`border rounded-lg p-4 cursor-pointer transition-colors touch-manipulation ${
                           selectedAddressId === address.id
                             ? 'border-red-500 bg-red-50'
                             : 'border-gray-200 hover:border-gray-300'
@@ -630,33 +633,33 @@ const CheckoutPage = () => {
                         onClick={() => setSelectedAddressId(address.id)}
                       >
                         <div className="flex items-start justify-between">
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2 mb-2">
                               <input
                                 type="radio"
                                 checked={selectedAddressId === address.id}
                                 onChange={() => setSelectedAddressId(address.id)}
-                                className="w-4 h-4 text-red-600"
+                                className="w-4 h-4 text-red-600 touch-manipulation"
                               />
-                              <span className="font-medium text-gray-900">{address.label}</span>
+                              <span className="font-medium text-gray-900 text-sm sm:text-base">{address.label}</span>
                               {address.is_default && (
                                 <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
                                   Default
                                 </span>
                               )}
                             </div>
-                            <div className="ml-6 text-sm text-gray-600">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <User className="w-4 h-4 text-gray-400" />
-                                <span className="font-medium text-gray-900">{address.recipient_name}</span>
+                            <div className="ml-6 text-sm text-gray-600 space-y-1">
+                              <div className="flex items-center space-x-2">
+                                <User className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+                                <span className="font-medium text-gray-900 text-sm sm:text-base">{address.recipient_name}</span>
                               </div>
-                              <div className="flex items-center space-x-2 mb-1">
-                                <Phone className="w-4 h-4 text-gray-400" />
-                                <span>{address.phone}</span>
+                              <div className="flex items-center space-x-2">
+                                <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+                                <span className="text-sm">{address.phone}</span>
                               </div>
                               <div className="flex items-start space-x-2">
-                                <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
-                                <div>
+                                <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                                <div className="text-sm">
                                   <p>{address.address_line}</p>
                                   <p>{address.city}, {address.province} {address.postal_code}</p>
                                 </div>
@@ -664,13 +667,13 @@ const CheckoutPage = () => {
                             </div>
                           </div>
                           
-                          <div className="flex space-x-2">
+                          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 ml-2">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleEditAddress(address);
                               }}
-                              className="text-gray-400 hover:text-blue-600"
+                              className="text-gray-400 hover:text-blue-600 p-2 touch-manipulation"
                               title="Edit alamat"
                             >
                               <Edit className="w-4 h-4" />
@@ -681,7 +684,7 @@ const CheckoutPage = () => {
                                   e.stopPropagation();
                                   handleDeleteAddress(address.id);
                                 }}
-                                className="text-gray-400 hover:text-red-600"
+                                className="text-gray-400 hover:text-red-600 p-2 touch-manipulation"
                                 title="Hapus alamat"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -696,7 +699,7 @@ const CheckoutPage = () => {
                               e.stopPropagation();
                               handleSetDefaultAddress(address.id);
                             }}
-                            className="ml-6 mt-2 text-sm text-blue-600 hover:text-blue-700"
+                            className="ml-6 mt-2 text-sm text-blue-600 hover:text-blue-700 touch-manipulation"
                           >
                             Jadikan Default
                           </button>
@@ -706,11 +709,11 @@ const CheckoutPage = () => {
                   </div>
                 )}
 
-                {/* Address Form Modal */}
+                {/* Address Form Modal - Mobile optimized */}
                 {showAddressForm && (
                   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
-                      <div className="p-6">
+                    <div className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+                      <div className="p-4 sm:p-6">
                         <h3 className="text-lg font-bold text-gray-900 mb-4">
                           {editingAddress ? 'Edit Alamat' : 'Tambah Alamat Baru'}
                         </h3>
@@ -725,7 +728,7 @@ const CheckoutPage = () => {
                               required
                               value={addressForm.label}
                               onChange={(e) => setAddressForm({...addressForm, label: e.target.value})}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
                               placeholder="Rumah, Kantor, Gudang, dll"
                             />
                           </div>
@@ -739,7 +742,7 @@ const CheckoutPage = () => {
                               required
                               value={addressForm.recipient_name}
                               onChange={(e) => setAddressForm({...addressForm, recipient_name: e.target.value})}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
                               placeholder="Nama lengkap penerima"
                             />
                           </div>
@@ -753,7 +756,7 @@ const CheckoutPage = () => {
                               required
                               value={addressForm.phone}
                               onChange={(e) => setAddressForm({...addressForm, phone: e.target.value})}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
                               placeholder="08xx xxxx xxxx"
                             />
                           </div>
@@ -767,12 +770,12 @@ const CheckoutPage = () => {
                               rows={3}
                               value={addressForm.address_line}
                               onChange={(e) => setAddressForm({...addressForm, address_line: e.target.value})}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base resize-none"
                               placeholder="Jalan, Nomor, RT/RW, Kelurahan, Kecamatan"
                             />
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0">
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Kota <span className="text-red-500">*</span>
@@ -782,7 +785,7 @@ const CheckoutPage = () => {
                                 required
                                 value={addressForm.city}
                                 onChange={(e) => setAddressForm({...addressForm, city: e.target.value})}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
                                 placeholder="Nama kota"
                               />
                             </div>
@@ -796,7 +799,7 @@ const CheckoutPage = () => {
                                 required
                                 value={addressForm.province}
                                 onChange={(e) => setAddressForm({...addressForm, province: e.target.value})}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
                                 placeholder="Nama provinsi"
                               />
                             </div>
@@ -810,12 +813,12 @@ const CheckoutPage = () => {
                               type="text"
                               value={addressForm.postal_code}
                               onChange={(e) => setAddressForm({...addressForm, postal_code: e.target.value})}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base"
                               placeholder="12345"
                             />
                           </div>
                           
-                          <div className="flex space-x-4 pt-4">
+                          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
                             <button
                               type="button"
                               onClick={() => {
@@ -823,13 +826,13 @@ const CheckoutPage = () => {
                                 setEditingAddress(null);
                                 resetAddressForm();
                               }}
-                              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-lg font-medium transition-colors"
+                              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg font-medium transition-colors touch-manipulation min-h-[44px]"
                             >
                               Batal
                             </button>
                             <button
                               type="submit"
-                              className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition-colors"
+                              className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-medium transition-colors touch-manipulation min-h-[44px]"
                             >
                               {editingAddress ? 'Simpan Perubahan' : 'Tambah Alamat'}
                             </button>
@@ -842,22 +845,22 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Order Summary */}
+            {/* Order Summary - Mobile optimized */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 lg:sticky lg:top-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <ShoppingCart className="w-5 h-5 mr-2 text-red-600" />
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-red-600" />
                   {lang.checkout.orderSummary}
                 </h3>
                 
-                <div className="space-y-4 mb-6">
+                <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <img 
                           src={item.image || "https://placehold.co/64x64/f3f4f6/9ca3af?text=Product"}
                           alt={item.name}
-                          className="w-12 h-12 object-contain"
+                          className="w-8 h-8 sm:w-12 sm:h-12 object-contain"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.src = "https://placehold.co/64x64/f3f4f6/9ca3af?text=Product";
@@ -867,16 +870,16 @@ const CheckoutPage = () => {
                       <div className="flex-1 min-w-0">
                         <Link 
                           href={generateSEOProductUrl(item.id, item.name)}
-                          className="block hover:text-red-600 transition-colors"
+                          className="block hover:text-red-600 transition-colors touch-manipulation"
                         >
-                          <h4 className="text-sm font-medium text-gray-900 line-clamp-2">{item.name}</h4>
+                          <h4 className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2 leading-tight">{item.name}</h4>
                         </Link>
                         {item.brand && (
                           <p className="text-xs text-gray-500 mt-1">{item.brand}</p>
                         )}
-                        <div className="flex items-center justify-between mt-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-2 space-y-1 sm:space-y-0">
                           <div className="flex items-center space-x-2">
-                            <span className="text-sm font-semibold text-red-600">
+                            <span className="text-xs sm:text-sm font-semibold text-red-600">
                               {formatRupiah(item.price)}
                               {item.unit && <span className="text-xs text-gray-500">/{item.unit}</span>}
                             </span>
@@ -886,11 +889,11 @@ const CheckoutPage = () => {
                               </span>
                             )}
                           </div>
-                          <span className="text-sm text-gray-600">x{item.quantity}</span>
+                          <span className="text-xs sm:text-sm text-gray-600">x{item.quantity}</span>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-bold text-gray-900">
+                        <div className="text-xs sm:text-sm font-bold text-gray-900">
                           {formatRupiah(item.price * item.quantity)}
                         </div>
                         {item.stock_quantity !== undefined && (
@@ -917,8 +920,8 @@ const CheckoutPage = () => {
                   </div>
                   
                   <div className="flex justify-between items-center pt-3 border-t">
-                    <span className="text-lg font-semibold text-gray-900">Total</span>
-                    <span className="text-xl font-bold text-red-600">
+                    <span className="text-base sm:text-lg font-semibold text-gray-900">Total</span>
+                    <span className="text-lg sm:text-xl font-bold text-red-600">
                       {formatRupiah(totalAmount)}
                     </span>
                   </div>
@@ -931,11 +934,11 @@ const CheckoutPage = () => {
                 <button
                   onClick={handleSubmitOrder}
                   disabled={!selectedAddressId || isSubmitting || addresses.length === 0 || cartItems.length === 0}
-                  className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-colors mt-6 flex items-center justify-center space-x-2"
+                  className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 sm:py-4 rounded-lg font-semibold transition-colors mt-4 sm:mt-6 flex items-center justify-center space-x-2 touch-manipulation min-h-[44px] text-sm sm:text-base"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                       <span>Memproses Pesanan...</span>
                     </>
                   ) : addresses.length === 0 ? (
@@ -957,23 +960,23 @@ const CheckoutPage = () => {
           </div>
         )}
 
-        {/* Step 2: Confirmation */}
+        {/* Step 2: Confirmation - Mobile optimized */}
         {currentStep === 'confirmation' && (
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-10 h-10 text-green-600" />
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8 text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" />
               </div>
               
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Pesanan Berhasil Dibuat!</h2>
-              <p className="text-gray-600 mb-2">Terima kasih atas pesanan Anda</p>
-              <p className="text-sm text-gray-500 mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Pesanan Berhasil Dibuat!</h2>
+              <p className="text-gray-600 mb-2 text-sm sm:text-base">Terima kasih atas pesanan Anda</p>
+              <p className="text-sm text-gray-500 mb-6 sm:mb-8">
                 Nomor Pesanan: <span className="font-mono font-semibold text-red-600">{orderNumber}</span>
               </p>
               
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-blue-900 mb-2">Langkah Selanjutnya</h3>
-                <div className="text-sm text-blue-800 text-left space-y-1">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
+                <h3 className="font-semibold text-blue-900 mb-2 text-sm sm:text-base">Langkah Selanjutnya</h3>
+                <div className="text-xs sm:text-sm text-blue-800 space-y-1">
                   <p>✅ Pesanan Anda telah disimpan</p>
                   <p>⏳ Admin akan menghitung ongkir dan menghubungi Anda</p>
                   <p>💳 Lakukan pembayaran sesuai instruksi dari admin</p>
@@ -981,17 +984,17 @@ const CheckoutPage = () => {
                 </div>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4 sm:justify-center">
                 <button
                   onClick={handleOrderComplete}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors touch-manipulation min-h-[44px] text-sm sm:text-base"
                 >
                   Kembali ke Beranda
                 </button>
                 
                 <Link
                   href="/products"
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors text-center"
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors text-center touch-manipulation min-h-[44px] text-sm sm:text-base"
                 >
                   Lanjut Belanja
                 </Link>

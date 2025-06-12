@@ -21,70 +21,30 @@ import {
   MapPin,
   ExternalLink,
   Building2,
-  Calendar,
-  ShoppingCart,
-  Eye,
-  AlertCircle
+  Calendar
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "@/context/LangContext";
-import { useSiemensProducts, useSupabaseSiemensProducts } from "@/hooks/useProducts";
-import { formatRupiah } from "@/utils/formatters";
 
 export default function Home() {
   const { lang } = useLang();
-  
-  // Get Siemens products from API
-  const { products: siemensProducts, loading: productsLoading, error: productsError, refetch } = useSiemensProducts(6);
-  
-  // Get Featured Siemens products from Supabase
-  const { products: featuredProducts, loading: featuredLoading, error: featuredError, refetch: refetchFeatured } = useSupabaseSiemensProducts(10);
-  
-  // Debug log to see what we're getting
-  useEffect(() => {
-    console.log('🔍 [HOME] Featured products data:', {
-      loading: featuredLoading,
-      error: featuredError,
-      productsCount: featuredProducts?.length || 0,
-      firstFewProducts: featuredProducts?.slice(0, 3).map(p => ({
-        id: p.id,
-        name: p.name?.substring(0, 30) + '...',
-        price: p.price,
-        accurate_code: p.accurate_code,
-        status: p.status
-      }))
-    });
-    
-    if (!featuredLoading && featuredProducts?.length === 1) {
-      console.warn('⚠️ [HOME] Only 1 product loaded - this might indicate filtering issues');
-    }
-  }, [featuredProducts, featuredLoading, featuredError]);
   
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
-  const [currentPromoSlide, setCurrentPromoSlide] = useState(0);
-  const [isPromoPlaying, setIsPromoPlaying] = useState(true);
-  const [isPromoTransitioning, setIsPromoTransitioning] = useState(false);
-  const [currentFeaturedSlide, setCurrentFeaturedSlide] = useState(0);
-  const [isFeaturedTransitioning, setIsFeaturedTransitioning] = useState(false);
   const [isVisible, setIsVisible] = useState({
     features: false,
     logos: false,
     whyChoose: false,
-    projects: false,
-    promos: false,
-    featured: false
+    projects: false
   });
   
   const featuresRef = useRef<HTMLDivElement>(null);
   const logosRef = useRef<HTMLDivElement>(null);
   const whyChooseRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
-  const promosRef = useRef<HTMLDivElement>(null);
-  const featuredRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   
   // Combine language data with images
@@ -145,65 +105,7 @@ export default function Home() {
     }
   };
 
-  // Carousel navigation functions for multi-item display
-  const nextPromoSlide = () => {
-    if (isPromoTransitioning || !siemensProducts || siemensProducts.length === 0) return;
-    setIsPromoTransitioning(true);
-    setCurrentPromoSlide((prev) => (prev + 1) % siemensProducts.length);
-    setTimeout(() => setIsPromoTransitioning(false), 600);
-  };
 
-  const prevPromoSlide = () => {
-    if (isPromoTransitioning || !siemensProducts || siemensProducts.length === 0) return;
-    setIsPromoTransitioning(true);
-    setCurrentPromoSlide((prev) => (prev - 1 + siemensProducts.length) % siemensProducts.length);
-    setTimeout(() => setIsPromoTransitioning(false), 600);
-  };
-
-  const goToPromoSlide = (index: number) => {
-    if (isPromoTransitioning || index === currentPromoSlide) return;
-    setIsPromoTransitioning(true);
-    setCurrentPromoSlide(index);
-    setTimeout(() => setIsPromoTransitioning(false), 600);
-  };
-
-  const handlePromoHover = () => {
-    setIsPromoPlaying(false);
-  };
-
-  const handlePromoLeave = () => {
-    setIsPromoPlaying(true);
-  };
-
-  // Featured products carousel navigation functions
-  const nextFeaturedSlide = () => {
-    if (isFeaturedTransitioning || !featuredProducts || featuredProducts.length === 0) return;
-    setIsFeaturedTransitioning(true);
-    
-    if (window.innerWidth >= 768) {
-      // Desktop: move by 1, but don't exceed the limit where we can't show 4 items
-      const maxSlide = Math.max(0, featuredProducts.length - 4);
-      setCurrentFeaturedSlide((prev) => Math.min(prev + 1, maxSlide));
-    } else {
-      // Mobile: move by 2
-      setCurrentFeaturedSlide((prev) => (prev + 2) % featuredProducts.length);
-    }
-    setTimeout(() => setIsFeaturedTransitioning(false), 600);
-  };
-
-  const prevFeaturedSlide = () => {
-    if (isFeaturedTransitioning || !featuredProducts || featuredProducts.length === 0) return;
-    setIsFeaturedTransitioning(true);
-    
-    if (window.innerWidth >= 768) {
-      // Desktop: move by 1, minimum is 0
-      setCurrentFeaturedSlide((prev) => Math.max(prev - 1, 0));
-    } else {
-      // Mobile: move by 2
-      setCurrentFeaturedSlide((prev) => (prev - 2 + featuredProducts.length) % featuredProducts.length);
-    }
-    setTimeout(() => setIsFeaturedTransitioning(false), 600);
-  };
 
   // Intersection Observer for animations
   useEffect(() => {
@@ -220,10 +122,6 @@ export default function Home() {
               setIsVisible(prev => ({ ...prev, whyChoose: true }));
             } else if (target === projectsRef.current) {
               setIsVisible(prev => ({ ...prev, projects: true }));
-            } else if (target === promosRef.current) {
-              setIsVisible(prev => ({ ...prev, promos: true }));
-            } else if (target === featuredRef.current) {
-              setIsVisible(prev => ({ ...prev, featured: true }));
             }
           }
         });
@@ -235,8 +133,6 @@ export default function Home() {
     if (logosRef.current) observer.observe(logosRef.current);
     if (whyChooseRef.current) observer.observe(whyChooseRef.current);
     if (projectsRef.current) observer.observe(projectsRef.current);
-    if (promosRef.current) observer.observe(promosRef.current);
-    if (featuredRef.current) observer.observe(featuredRef.current);
 
     return () => observer.disconnect();
   }, []);
@@ -256,16 +152,7 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [currentSlide, isTransitioning, showConsultationForm, slides.length]);
 
-  // Auto-advance promo slideshow
-  useEffect(() => {
-    if (!isPromoPlaying) return;
 
-    const timer = setTimeout(() => {
-      nextPromoSlide();
-    }, 5000); // 5 seconds
-
-    return () => clearTimeout(timer);
-  }, [currentPromoSlide, isPromoPlaying]);
 
   // Keyboard support
   useEffect(() => {
@@ -974,331 +861,7 @@ export default function Home() {
       </section>
 
 
-      {/* Featured Products Section - Produk Pilihan untuk Anda */}
-      <section 
-        ref={featuredRef}
-        className="w-full pt-20 pb-5 bg-gradient-to-br from-red-50 via-white to-rose-50"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-5">
-          
-          {/* Section Header */}
-          <div className={`flex pb-5 flex-col sm:flex-row sm:items-center sm:justify-between mb-12 transition-all duration-1000 ${
-            isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>
-            <div className="mb-6 sm:mb-0">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                {lang.siemensProducts.title}
-              </h2>
-              <p className="text-lg text-gray-600 font-light">
-                {lang.siemensProducts.subtitle}
-              </p>
-              {!featuredLoading && featuredProducts.length > 0 && (
-                <p className="text-sm text-red-600 font-medium mt-4">
-                  {featuredProducts.length} {lang.siemensProducts.availableProducts}
-                </p>
-              )}
-            </div>
-            
-            {/* Navigation Arrows */}
-            {!featuredLoading && !featuredError && featuredProducts.length > 1 && (
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={prevFeaturedSlide}
-                  disabled={isFeaturedTransitioning}
-                  className="w-12 h-12 bg-white hover:bg-red-50 border border-red-200 hover:border-red-600 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
-                  aria-label="Previous featured products"
-                >
-                  <ChevronLeft className="w-5 h-5 text-red-600 group-hover:text-red-700 transition-colors duration-300" />
-                </button>
-                <button
-                  onClick={nextFeaturedSlide}
-                  disabled={isFeaturedTransitioning}
-                  className="w-12 h-12 bg-white hover:bg-red-50 border border-red-200 hover:border-red-600 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed group"
-                  aria-label="Next featured products"
-                >
-                  <ChevronRight className="w-5 h-5 text-red-600 group-hover:text-red-700 transition-colors duration-300" />
-                </button>
-              </div>
-            )}
-          </div>
-          
-          {/* Loading State */}
-          {featuredLoading && (
-            <div className={`text-center py-16 transition-all duration-1000 delay-300 ${
-              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>
-              <div className="animate-spin w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-gray-600 font-medium">{lang.siemensProducts.loading}</p>
-              <p className="text-sm text-gray-500 mt-2">{lang.siemensProducts.loadingWait}</p>
-            </div>
-          )}
-          
-          {/* Error State */}
-          {featuredError && (
-            <div className={`text-center py-16 transition-all duration-1000 delay-300 ${
-              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>
-              <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-2xl mx-auto">
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-red-800 mb-2">{lang.siemensProducts.errorTitle}</h3>
-                <div className="text-red-600 mb-4 text-sm text-left bg-red-100 p-3 rounded">
-                  <pre className="whitespace-pre-wrap">{featuredError}</pre>
-                </div>
-                <button
-                  onClick={refetchFeatured}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200"
-                >
-                  {lang.siemensProducts.retryButton}
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {/* No Products Found State */}
-          {!featuredLoading && !featuredError && featuredProducts.length === 0 && (
-            <div className={`text-center py-16 transition-all duration-1000 delay-300 ${
-              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>
-              <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-red-800 mb-2">{lang.siemensProducts.noProductsTitle}</h3>
-                <p className="text-red-600 mb-4 text-sm">
-                  {lang.siemensProducts.noProductsMessage}
-                </p>
-                <button
-                  onClick={refetchFeatured}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200"
-                >
-                  {lang.siemensProducts.refreshButton}
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {/* Products Carousel */}
-          {!featuredLoading && !featuredError && featuredProducts.length > 0 && (
-            <div className={`transition-all duration-1000 delay-300 ${
-              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>
-              
-              {/* Desktop Carousel - Show 4 products, slide by 1 */}
-              <div className="hidden md:block relative overflow-hidden">
-                <div 
-                  className="flex transition-transform duration-600 ease-in-out"
-                  style={{ 
-                    transform: `translateX(-${currentFeaturedSlide * (100 / 4)}%)`,
-                  }}
-                >
-                  {featuredProducts.map((product, index) => (
-                                      <div 
-                    key={product.id} 
-                    className="w-1/4 flex-shrink-0 px-3 pb-5"
-                  >
-                      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-2 h-full flex flex-col">
-                        
-                        {/* Product Image */}
-                        <div className="relative aspect-[4/3] overflow-hidden">
-                          <img 
-                            src={product.admin_thumbnail || "https://placehold.co/600x400/f8fafc/64748b?text=Product+Image"}
-                            alt={product.name || 'Product'}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                          
-                          {/* Stock Status Badge */}
-                          {product.stock_quantity > 0 ? (
-                            <div className="absolute top-3 left-3">
-                              <span className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                                {lang.siemensProducts.stockAvailable}
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="absolute top-3 left-3">
-                              <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                                {lang.siemensProducts.stockIndent}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Product Content */}
-                        <div className="p-5 flex-1 flex flex-col">
-                          
-                          {/* Product Name */}
-                          <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 leading-tight transition-colors duration-300 group-hover:text-red-600">
-                            {product.name && product.name.trim() && product.name.toLowerCase() !== 'null' 
-                              ? product.name 
-                              : 'Produk Berkualitas'}
-                          </h3>
-                          
-                          {/* Product Code */}
-                          {product.accurate_code && (
-                            <div className="mb-3">
-                              <p className="text-sm font-mono font-medium text-gray-600 bg-gray-100 px-3 py-2 rounded">
-                                {lang.siemensProducts.productCode}: {product.accurate_code}
-                              </p>
-                            </div>
-                          )}
-                          
-                          {/* Category */}
-                          <div className="mb-4">
-                            <p className="text-sm font-medium text-gray-700">
-                              {lang.siemensProducts.category}: <span className="text-gray-900">{product.category || lang.siemensProducts.categoryNotAvailable}</span>
-                            </p>
-                          </div>
-                          
-                          {/* Price */}
-                          <div className="mb-4">
-                            <span className="text-2xl font-bold text-red-600">
-                              {product.price > 0 ? formatRupiah(product.price) : lang.siemensProducts.priceContactSales}
-                            </span>
-                          </div>
-                          
-                          {/* Action Button */}
-                          <div className="mt-auto">
-                            {product.stock_quantity > 0 ? (
-                              <button 
-                                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm"
-                              >
-                                <ShoppingCart className="w-4 h-4" />
-                                <span>{lang.siemensProducts.addToCart}</span>
-                              </button>
-                            ) : (
-                              <a 
-                                href={`https://wa.me/628111086180?text=${encodeURIComponent(lang.siemensProducts.whatsappStockMessage)}:%20${encodeURIComponent(product.name || 'Produk')}${product.accurate_code ? `%20(${lang.siemensProducts.productCode}:%20${encodeURIComponent(product.accurate_code)})` : ''}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm"
-                              >
-                                <MessageCircle className="w-4 h-4" />
-                                <span>{lang.siemensProducts.contactForStock}</span>
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Mobile Carousel - Show 2 products, slide by 2 */}
-              <div className="md:hidden relative overflow-hidden">
-                <div 
-                  className="flex transition-transform duration-600 ease-in-out"
-                  style={{ 
-                    transform: `translateX(-${currentFeaturedSlide * 50}%)`,
-                  }}
-                >
-                  {featuredProducts.map((product, index) => (
-                    <div 
-                      key={product.id} 
-                      className="w-1/2 flex-shrink-0 px-2 pb-5"
-                    >
-                      <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden group transition-all duration-300 hover:shadow-xl h-full flex flex-col">
-                        
-                        {/* Product Image */}
-                        <div className="relative aspect-square overflow-hidden">
-                          <img 
-                            src={product.admin_thumbnail || "https://placehold.co/400x400/f8fafc/64748b?text=Product"}
-                            alt={product.name || 'Product'}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                          
-                          {/* Stock Status Badge */}
-                          {product.stock_quantity > 0 ? (
-                            <div className="absolute top-2 left-2">
-                              <span className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                                {lang.siemensProducts.stockAvailable}
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="absolute top-2 left-2">
-                              <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
-                                {lang.siemensProducts.stockIndent}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Product Content */}
-                        <div className="p-4 flex-1 flex flex-col">
-                          
-                          {/* Product Name */}
-                          <h3 className="font-bold text-base text-gray-900 mb-2 line-clamp-2 leading-tight transition-colors duration-300 group-hover:text-red-600">
-                            {product.name && product.name.trim() && product.name.toLowerCase() !== 'null' 
-                              ? product.name 
-                              : 'Produk Berkualitas'}
-                          </h3>
-                          
-                          {/* Product Code */}
-                          {product.accurate_code && (
-                            <div className="mb-2">
-                              <p className="text-xs font-mono font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                                {product.accurate_code}
-                              </p>
-                            </div>
-                          )}
-                          
-                          {/* Category */}
-                          <div className="mb-3">
-                            <p className="text-xs text-gray-600">
-                              {product.category || lang.siemensProducts.categoryNotAvailable}
-                            </p>
-                          </div>
-                          
-                          {/* Price */}
-                          <div className="mb-3">
-                            <span className="text-lg font-bold text-red-600">
-                              {product.price > 0 ? formatRupiah(product.price) : lang.siemensProducts.priceContactSales}
-                            </span>
-                          </div>
-                          
-                          {/* Action Button */}
-                          <div className="mt-auto">
-                            {product.stock_quantity > 0 ? (
-                              <button 
-                                className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 flex items-center justify-center space-x-1 text-sm"
-                              >
-                                <ShoppingCart className="w-3 h-3" />
-                                <span>{lang.siemensProducts.addToCart}</span>
-                              </button>
-                            ) : (
-                              <a 
-                                href={`https://wa.me/628111086180?text=${encodeURIComponent(lang.siemensProducts.whatsappStockMessage)}:%20${encodeURIComponent(product.name || 'Produk')}${product.accurate_code ? `%20(${lang.siemensProducts.productCode}:%20${encodeURIComponent(product.accurate_code)})` : ''}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 flex items-center justify-center space-x-1 text-sm"
-                              >
-                                <MessageCircle className="w-3 h-3" />
-                                <span>{lang.siemensProducts.contactForStock}</span>
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* View All Products CTA */}
-          {!featuredLoading && featuredProducts.length > 0 && (
-            <div className={`text-center mt-12 mb-16 transition-all duration-1000 delay-500 ${
-              isVisible.featured ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>
-              <Link 
-                href="/search?query=siemens"
-                className="inline-flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 text-lg"
-              >
-                <span>{lang.siemensProducts.viewAll}</span>
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Link>
-            </div>
-          )}
-        </div>
-      </section>
+
 
       {/* Floating Consultation Button */}
       <div className="fixed bottom-6 right-6 z-50">

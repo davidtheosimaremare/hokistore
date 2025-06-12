@@ -32,7 +32,7 @@ const initialSettings = {
     siteName: "Hokiindo Raya",
     siteTagline: "Distributor Siemens Terbaik dan Terpercaya",
     logo: "/images/logo.png",
-    favicon: "/favicon.ico"
+    favicon: "/images/asset-web/logo-fav.png"
   },
   contact: {
     email: "info@hokiindo.com",

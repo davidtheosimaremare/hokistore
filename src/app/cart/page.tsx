@@ -173,28 +173,28 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center space-x-4 mb-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          <div className="flex items-center space-x-2 sm:space-x-4 mb-6 sm:mb-8">
             <button
               onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-red-600 transition-colors"
+              className="flex items-center text-gray-600 hover:text-red-600 transition-colors touch-manipulation min-h-[44px] px-2 -ml-2"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              {lang.common.back || 'Kembali'}
+              <span className="text-sm sm:text-base">{lang.common.back || 'Kembali'}</span>
             </button>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-            <ShoppingCart className="w-20 h-20 text-gray-300 mx-auto mb-6" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">{lang.cart.emptyCart}</h2>
-            <p className="text-gray-600 mb-8">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-12 text-center">
+            <ShoppingCart className="w-16 h-16 sm:w-20 sm:h-20 text-gray-300 mx-auto mb-4 sm:mb-6" />
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">{lang.cart.emptyCart}</h2>
+            <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">
               {lang.cart.emptyCartMessage}
             </p>
             <Link
               href="/products"
-              className="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold"
+              className="inline-flex items-center bg-red-600 text-white px-6 py-3 sm:py-4 rounded-lg hover:bg-red-700 transition-colors font-semibold text-sm sm:text-base touch-manipulation min-h-[44px]"
             >
-              <Package className="w-5 h-5 mr-2" />
+              <Package className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               {lang.cart.viewProducts}
             </Link>
           </div>
@@ -208,25 +208,25 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center space-x-4 mb-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          <div className="flex items-center space-x-2 sm:space-x-4 mb-6 sm:mb-8">
             <button
               onClick={() => setShowCheckoutForm(false)}
-              className="flex items-center text-gray-600 hover:text-red-600 transition-colors"
+              className="flex items-center text-gray-600 hover:text-red-600 transition-colors touch-manipulation min-h-[44px] px-2 -ml-2"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Kembali ke Keranjang
+              <span className="text-sm sm:text-base">Kembali ke Keranjang</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="space-y-6 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
             {/* Checkout Form */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Informasi Pengiriman</h2>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Informasi Pengiriman</h2>
                 
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="space-y-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         <User className="w-4 h-4 inline mr-1" />
@@ -237,7 +237,7 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                         required
                         value={checkoutForm.name}
                         onChange={(e) => setCheckoutForm({...checkoutForm, name: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-3 sm:py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base sm:text-sm"
                         placeholder="Masukkan nama lengkap"
                       />
                     </div>
@@ -252,7 +252,7 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                         required
                         value={checkoutForm.phone}
                         onChange={(e) => setCheckoutForm({...checkoutForm, phone: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-3 sm:py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base sm:text-sm"
                         placeholder="08xx xxxx xxxx"
                       />
                     </div>
@@ -267,7 +267,7 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                       type="email"
                       value={checkoutForm.email}
                       onChange={(e) => setCheckoutForm({...checkoutForm, email: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-3 sm:py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base sm:text-sm"
                       placeholder="email@example.com"
                     />
                   </div>
@@ -282,12 +282,12 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                       rows={3}
                       value={checkoutForm.address}
                       onChange={(e) => setCheckoutForm({...checkoutForm, address: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-3 sm:py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base sm:text-sm resize-none"
                       placeholder="Jalan, Nomor, RT/RW, Kelurahan, Kecamatan"
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-4 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Kota *
@@ -297,7 +297,7 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                         required
                         value={checkoutForm.city}
                         onChange={(e) => setCheckoutForm({...checkoutForm, city: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-3 sm:py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base sm:text-sm"
                         placeholder="Nama kota"
                       />
                     </div>
@@ -310,7 +310,7 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                         type="text"
                         value={checkoutForm.postalCode}
                         onChange={(e) => setCheckoutForm({...checkoutForm, postalCode: e.target.value})}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-3 sm:py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base sm:text-sm"
                         placeholder="12345"
                       />
                     </div>
@@ -324,7 +324,7 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                       rows={3}
                       value={checkoutForm.notes}
                       onChange={(e) => setCheckoutForm({...checkoutForm, notes: e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-3 sm:py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500 text-base sm:text-sm resize-none"
                       placeholder="Catatan khusus untuk pesanan (opsional)"
                     />
                   </div>
@@ -334,16 +334,16 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 lg:sticky lg:top-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h3>
                 
                 <div className="space-y-3 mb-4">
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex justify-between text-sm">
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 truncate pr-2">
                         {item.name} (x{item.quantity})
                       </span>
-                      <span className="font-medium">
+                      <span className="font-medium whitespace-nowrap">
                         {formatRupiah(item.price * item.quantity)}
                       </span>
                     </div>
@@ -358,26 +358,28 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                     </span>
                   </div>
                   
-                  <Link
-                    href="/checkout"
-                    className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold flex items-center justify-center space-x-2"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    <span>Lanjut ke Checkout</span>
-                  </Link>
-                  
-                  <button
-                    onClick={handleSubmitOrder}
-                    disabled={isCheckingOut || !checkoutForm.name || !checkoutForm.phone || !checkoutForm.address || !checkoutForm.city}
-                    className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 mt-3"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>{isCheckingOut ? 'Memproses...' : 'Pesan via WhatsApp'}</span>
-                  </button>
-                  
-                  <p className="text-xs text-gray-500 mt-2 text-center">
-                    Pesanan akan dikirim melalui WhatsApp untuk konfirmasi
-                  </p>
+                  <div className="space-y-3">
+                    <Link
+                      href="/checkout"
+                      className="w-full bg-red-600 text-white py-3 sm:py-4 rounded-lg hover:bg-red-700 transition-colors font-semibold flex items-center justify-center space-x-2 touch-manipulation min-h-[44px] text-sm sm:text-base"
+                    >
+                      <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span>Lanjut ke Checkout</span>
+                    </Link>
+                    
+                    <button
+                      onClick={handleSubmitOrder}
+                      disabled={isCheckingOut || !checkoutForm.name || !checkoutForm.phone || !checkoutForm.address || !checkoutForm.city}
+                      className="w-full bg-green-600 text-white py-3 sm:py-4 rounded-lg hover:bg-green-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 touch-manipulation min-h-[44px] text-sm sm:text-base"
+                    >
+                      <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span>{isCheckingOut ? 'Memproses...' : 'Pesan via WhatsApp'}</span>
+                    </button>
+                    
+                    <p className="text-xs text-gray-500 text-center">
+                      Pesanan akan dikirim melalui WhatsApp untuk konfirmasi
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -392,44 +394,46 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between mb-6 sm:mb-8 flex-wrap gap-3">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <button
               onClick={() => router.back()}
-              className="flex items-center text-gray-600 hover:text-red-600 transition-colors"
+              className="flex items-center text-gray-600 hover:text-red-600 transition-colors touch-manipulation min-h-[44px] px-2 -ml-2"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Kembali
+              <span className="text-sm sm:text-base">Kembali</span>
             </button>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Keranjang Belanja ({cartCount} item)
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">
+              <span className="hidden sm:inline">Keranjang Belanja ({cartCount} item)</span>
+              <span className="sm:hidden">Keranjang ({cartCount})</span>
             </h1>
           </div>
           
           {cartItems.length > 0 && (
             <button
               onClick={clearCart}
-              className="text-red-600 hover:text-red-700 text-sm font-medium"
+              className="text-red-600 hover:text-red-700 text-sm font-medium touch-manipulation min-h-[44px] px-2"
             >
-              Kosongkan Keranjang
+              <span className="hidden sm:inline">Kosongkan Keranjang</span>
+              <span className="sm:hidden">Kosongkan</span>
             </button>
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="space-y-6 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {cartItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center space-x-4">
-                  {/* Product Image */}
-                  <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                  {/* Product Image - Mobile responsive */}
+                  <div className="w-full sm:w-20 sm:h-20 h-32 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <img 
                       src={item.image || "https://placehold.co/80x80/f3f4f6/9ca3af?text=Product"}
                       alt={item.name}
-                      className="w-16 h-16 object-contain"
+                      className="w-full h-full sm:w-16 sm:h-16 object-contain rounded-lg"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "https://placehold.co/80x80/f3f4f6/9ca3af?text=Product";
@@ -437,27 +441,27 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                     />
                   </div>
 
-                  {/* Product Details */}
+                  {/* Product Details - Mobile optimized */}
                   <div className="flex-1 min-w-0">
                     <Link 
                       href={generateSEOProductUrl(item.id, item.name)}
-                      className="block hover:text-red-600 transition-colors"
+                      className="block hover:text-red-600 transition-colors touch-manipulation"
                     >
-                      <h3 className="font-semibold text-gray-900 truncate">{item.name}</h3>
+                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base leading-tight">{item.name}</h3>
                     </Link>
                     
                     {item.brand && (
-                      <p className="text-sm text-gray-500 mt-1">{item.brand}</p>
+                      <p className="text-xs sm:text-sm text-gray-500 mt-1">{item.brand}</p>
                     )}
                     
-                    <div className="flex items-center space-x-4 mt-2">
-                      <span className="text-lg font-bold text-red-600">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 space-y-2 sm:space-y-0">
+                      <span className="text-base sm:text-lg font-bold text-red-600">
                         {formatRupiah(item.price)}
                         {item.unit && <span className="text-xs text-gray-500">/{item.unit}</span>}
                       </span>
                       
                       {item.category && (
-                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
+                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs w-fit">
                           {item.category}
                         </span>
                       )}
@@ -477,49 +481,52 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                     )}
                   </div>
 
-                  {/* Quantity Controls */}
-                  <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                      disabled={item.quantity <= 1}
-                      className="w-8 h-8 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    
-                    <span className="w-12 text-center font-semibold">{item.quantity}</span>
-                    
-                    <button
-                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                      disabled={item.stock_quantity !== undefined && item.quantity >= item.stock_quantity}
-                      className="w-8 h-8 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors"
-                      title={item.stock_quantity !== undefined && item.quantity >= item.stock_quantity ? 
-                        `Stok maksimal: ${item.stock_quantity}` : 'Tambah quantity'}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
+                  {/* Quantity Controls and Item Total - Mobile layout */}
+                  <div className="flex items-center justify-between sm:flex-col sm:items-end sm:space-y-3">
+                    {/* Quantity Controls */}
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                        disabled={item.quantity <= 1}
+                        className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors touch-manipulation"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      
+                      <span className="w-12 text-center font-semibold text-sm sm:text-base">{item.quantity}</span>
+                      
+                      <button
+                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                        disabled={item.stock_quantity !== undefined && item.quantity >= item.stock_quantity}
+                        className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors touch-manipulation"
+                        title={item.stock_quantity !== undefined && item.quantity >= item.stock_quantity ? 
+                          `Stok maksimal: ${item.stock_quantity}` : 'Tambah quantity'}
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
 
-                  {/* Item Total */}
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-gray-900">
-                      {formatRupiah(item.price * item.quantity)}
-                    </p>
-                    <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="text-red-600 hover:text-red-700 text-sm mt-2 flex items-center"
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      Hapus
-                    </button>
+                    {/* Item Total and Remove Button */}
+                    <div className="text-right sm:text-center">
+                      <p className="text-base sm:text-lg font-bold text-gray-900">
+                        {formatRupiah(item.price * item.quantity)}
+                      </p>
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-red-600 hover:text-red-700 text-sm mt-1 sm:mt-2 flex items-center sm:justify-center touch-manipulation min-h-[44px] px-2 -mr-2 sm:mr-0"
+                      >
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Product Actions */}
-                <div className="mt-4 pt-4 border-t border-gray-100 flex space-x-4">
+                {/* Product Actions - Mobile optimized */}
+                <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                   <Link
                     href={generateSEOProductUrl(item.id, item.name)}
-                    className="text-sm text-gray-600 hover:text-red-600 transition-colors"
+                    className="text-sm text-gray-600 hover:text-red-600 transition-colors touch-manipulation min-h-[44px] flex items-center px-2 -mx-2"
                   >
                     Lihat Detail
                   </Link>
@@ -527,7 +534,7 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                     href={getWhatsAppLink(item.name)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-green-600 hover:text-green-700 transition-colors flex items-center"
+                    className="text-sm text-green-600 hover:text-green-700 transition-colors flex items-center touch-manipulation min-h-[44px] px-2 -mx-2"
                   >
                     <MessageCircle className="w-3 h-3 mr-1" />
                     Tanya Produk
@@ -537,20 +544,20 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
             ))}
           </div>
 
-          {/* Cart Summary */}
+          {/* Cart Summary - Mobile fixed bottom on small screens */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 lg:sticky lg:top-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h3>
               
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{lang.cart.subtotal}</span>
-                  <span className="font-medium">{formatRupiah(totalAmount)}</span>
+                  <span className="text-gray-600 text-sm sm:text-base">{lang.cart.subtotal}</span>
+                  <span className="font-medium text-sm sm:text-base">{formatRupiah(totalAmount)}</span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{lang.cart.shipping}</span>
-                  <span className="text-sm text-orange-600 font-medium">
+                  <span className="text-gray-600 text-sm sm:text-base">{lang.cart.shipping}</span>
+                  <span className="text-xs sm:text-sm text-orange-600 font-medium">
                     {lang.common.loading === 'Loading...' 
                       ? 'Akan dihitung admin' 
                       : 'To be calculated by admin'
@@ -560,14 +567,14 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
               </div>
               
               <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-4 sm:mb-6">
                   <span className="text-lg font-semibold text-gray-900">{lang.cart.total}</span>
                   <span className="text-xl font-bold text-red-600">
                     {formatRupiah(totalAmount)}
                   </span>
                 </div>
                 
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mb-4 sm:mb-6">
                   {lang.common.loading === 'Loading...' 
                     ? '* Belum termasuk ongkir yang akan dikonfirmasi admin' 
                     : '* Excluding shipping cost to be confirmed by admin'
@@ -575,11 +582,11 @@ Mohon konfirmasi ketersediaan dan proses pemesanan. Terima kasih!
                 </p>
               </div>
               
-              <div className="mt-6 space-y-3">
+              <div className="space-y-3">
                 <button
                   onClick={handleCheckout}
                   disabled={cartItems.length === 0}
-                  className="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-semibold text-center block"
+                  className="w-full bg-red-600 text-white py-3 sm:py-4 px-4 rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-semibold text-center block touch-manipulation min-h-[44px] text-sm sm:text-base"
                 >
                   {cartItems.length === 0 ? 'Keranjang Kosong' : 
                    `Checkout (${formatRupiah(totalAmount)})`}

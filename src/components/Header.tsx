@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Search,
   ShoppingCart,
@@ -82,7 +82,24 @@ const Header = () => {
   const { lang } = useLang();
   const { user, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const { cartCount } = useCart();
+  
+  // Determine if we're on homepage navigation pages or store pages
+  const isHomepageNavigation = pathname === '/' || 
+                              pathname.startsWith('/about') || 
+                              pathname.startsWith('/contact') || 
+                              pathname.startsWith('/blog') || 
+                              pathname.startsWith('/projects');
+  
+  const isStorePage = pathname.startsWith('/products') || 
+                     pathname.startsWith('/cart') || 
+                     pathname.startsWith('/checkout') || 
+                     pathname.startsWith('/dashboard') || 
+                     pathname.startsWith('/search') ||
+                     pathname.startsWith('/product/') ||
+                     pathname.startsWith('/login') ||
+                     pathname.startsWith('/register');
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -447,6 +464,165 @@ const Header = () => {
     );
   };
 
+  // Homepage Header (Simple Navigation)
+  const renderHomepageHeader = () => (
+    <>
+      {/* Top Bar */}
+      <div className="border-b py-1 relative overflow-hidden" style={{background: `linear-gradient(to right, #FF0023, #CC001C)`, borderBottomColor: '#FF002330'}}>
+        <div className="absolute inset-0 animate-pulse" style={{background: `linear-gradient(to right, #FF002305, #FF002305)`}}></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="w-3 h-3 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full animate-pulse shadow-lg shadow-yellow-400/50"></div>
+                  <div className="absolute inset-0 w-3 h-3 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full animate-ping"></div>
+                </div>
+                <span className="text-sm font-semibold text-gray-100 tracking-wide">
+                  <span dangerouslySetInnerHTML={{
+                    __html: lang.common.companyTagline.replace(
+                      /(SIEMENS|Siemens)/gi, 
+                      '<span style="font-family: \'Arial Black\', \'Helvetica\', sans-serif; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase;">$1</span>'
+                    )
+                  }} />
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <div className="transform hover:scale-105 transition-transform duration-200">
+                <LanguageSwitcher />
+              </div>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center space-x-2 bg-white hover:bg-gray-50 text-green-600 hover:text-green-700 px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 border border-gray-300"
+              >
+                <MessageCircle className="w-4 h-4 group-hover:animate-bounce" />
+                <span className="text-xs font-bold hidden sm:inline">Hubungi Kami</span>
+                <span className="text-xs font-bold sm:hidden">Hubungi</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Homepage Navigation */}
+      <header className="sticky top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-gray-200/50 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <div className="flex-shrink-0 relative group">
+                <div onClick={() => router.push("/")} className="cursor-pointer">
+                  <Image
+                    src="/images/asset-web/logo.png"
+                    alt="Hokiindo Raya"
+                    width={180}
+                    height={50}
+                    priority
+                    className="h-10 w-auto object-contain md:h-12"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              <a href="/" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
+                Home
+              </a>
+              <a href="/about" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
+                About
+              </a>
+              <a href="/projects" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
+                Project & Reference
+              </a>
+              <a href="/blog" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
+                Blog
+              </a>
+              <a href="/contact" className="text-gray-700 hover:text-red-600 font-medium transition-colors">
+                Contact
+              </a>
+            </nav>
+
+            {/* Store Button & Mobile Menu */}
+            <div className="flex items-center space-x-4">
+              <Button
+                onClick={() => router.push('/products')}
+                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+              >
+                Visit Store
+              </Button>
+
+              {/* Mobile Menu */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" className="lg:hidden p-2 text-gray-700 hover:text-red-600">
+                    <Menu className="w-6 h-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80">
+                  <SheetHeader>
+                    <SheetTitle className="text-left">
+                      <div className="flex items-center space-x-2">
+                        <div className="relative w-8 h-8">
+                          <Image
+                            src="/images/asset-web/logo.png"
+                            alt="Hokiindo Raya Logo"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                        <span className="text-lg font-bold text-gray-900">Hokiindo Raya</span>
+                      </div>
+                    </SheetTitle>
+                  </SheetHeader>
+                  
+                  <div className="flex flex-col h-full overflow-y-auto mt-6">
+                    <div className="space-y-1">
+                      <a href="/" className="flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors">
+                        Home
+                      </a>
+                      <a href="/about" className="flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors">
+                        About
+                      </a>
+                      <a href="/projects" className="flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors">
+                        Project & Reference
+                      </a>
+                      <a href="/blog" className="flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors">
+                        Blog
+                      </a>
+                      <a href="/contact" className="flex items-center p-3 rounded-lg hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors">
+                        Contact
+                      </a>
+                      <div className="pt-4">
+                        <Button
+                          onClick={() => router.push('/products')}
+                          className="w-full bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium"
+                        >
+                          Visit Store
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+        </div>
+      </header>
+    </>
+  );
+
+  // Conditional rendering based on page type
+  if (isHomepageNavigation) {
+    return renderHomepageHeader();
+  }
+
+  // Store/E-commerce Header (existing complex header for store pages)
   return (
     <>
       {/* Top Bar - Static (not sticky) */}
@@ -543,24 +719,12 @@ const Header = () => {
                         <DropdownMenuItem asChild>
                           <a
                             href={category.href}
-                            className="flex items-start space-x-3 p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 cursor-pointer group"
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 cursor-pointer group"
                           >
-                            <div className="flex-shrink-0 w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors duration-200">
-                              <span className="text-red-600 group-hover:text-red-700">
-                                {category.icon}
-                              </span>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
-                                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-200">
-                                  {category.name}
-                                </h4>
-                                <ArrowRight className="w-3 h-3 text-gray-400 group-hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200" />
-                              </div>
-                              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                                {category.description}
-                              </p>
-                            </div>
+                            <h4 className="text-sm font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-200">
+                              {category.name}
+                            </h4>
+                            <ArrowRight className="w-3 h-3 text-gray-400 group-hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200" />
                           </a>
                         </DropdownMenuItem>
                         {index < productCategories.length - 1 && (
@@ -575,16 +739,7 @@ const Header = () => {
                       href="/products"
                       className="flex items-center justify-center p-3 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors duration-200"
                     >
-                      {lang.products.viewAllCategories}
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </a>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a
-                      href="/products-list"
-                      className="flex items-center justify-center p-3 text-sm font-medium text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors duration-200"
-                    >
-                      Katalog Produk Lengkap
+                      Lihat Semua Produk
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </a>
                   </DropdownMenuItem>
@@ -747,25 +902,25 @@ const Header = () => {
               >
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold text-[10px]">
-                    {cartCount > 9 ? '9+' : cartCount}
+                  <span className="absolute -top-2 -right-2 bg-yellow-500 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                    {cartCount}
                   </span>
                 )}
               </Button>
 
-              {/* Mobile Menu */}
+              {/* Mobile Menu Toggle */}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="lg:hidden p-2 text-gray-700 hover:text-red-600"
+                    className="lg:hidden p-2 text-gray-700 hover:text-red-600 transition-colors"
                     size="sm"
                   >
-                    <Menu className="w-5 h-5" />
+                    <Menu className="w-6 h-6" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-80 p-0 bg-gradient-to-b from-white to-gray-50">
-                  <SheetHeader className="p-6 border-b border-gray-100 bg-white">
+                <SheetContent side="right" className="w-80 p-0">
+                  <SheetHeader className="p-6 border-b border-gray-100">
                     <SheetTitle className="text-left text-xl font-bold text-gray-900">Menu</SheetTitle>
                   </SheetHeader>
                   
@@ -780,18 +935,11 @@ const Header = () => {
                           <a
                             key={index}
                             href={category.href}
-                            className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100/50 text-gray-700 hover:text-red-600 transition-all duration-200 group cursor-pointer"
+                            className="flex items-center justify-between p-3 rounded-xl hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100/50 text-gray-700 hover:text-red-600 transition-all duration-200 group cursor-pointer"
                           >
-                            <div className="w-10 h-10 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center group-hover:from-red-200 group-hover:to-red-300 transition-all duration-200 shadow-sm">
-                              <span className="text-red-600 group-hover:text-red-700 text-sm">
-                                {category.icon}
-                              </span>
-                            </div>
-                            <div className="flex-1">
-                              <span className="text-sm font-medium group-hover:font-semibold transition-all duration-200">
-                                {category.name}
-                              </span>
-                            </div>
+                            <span className="text-sm font-medium group-hover:font-semibold transition-all duration-200">
+                              {category.name}
+                            </span>
                             <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200" />
                           </a>
                         ))}
@@ -799,7 +947,7 @@ const Header = () => {
                           href="/products"
                           className="flex items-center justify-center p-3 mt-4 text-red-600 hover:text-red-700 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100/50 rounded-xl text-sm font-semibold transition-all duration-200 border border-red-200 hover:border-red-300 cursor-pointer"
                         >
-                          {lang.products.viewAllCategories}
+                          Lihat Semua Produk
                           <ArrowRight className="w-4 h-4 ml-2" />
                         </a>
                       </div>
@@ -875,16 +1023,7 @@ const Header = () => {
                           <span className="text-sm font-medium">Produk</span>
                           <ArrowRight className="w-4 h-4 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-all duration-200" />
                         </a>
-                        <a
-                          href="/products-list"
-                          className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50 text-gray-700 hover:text-gray-900 transition-all duration-200 group cursor-pointer"
-                        >
-                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                            <AlignJustify className="w-4 h-4 text-green-600" />
-                          </div>
-                          <span className="text-sm font-medium">Katalog Produk</span>
-                          <ArrowRight className="w-4 h-4 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-all duration-200" />
-                        </a>
+
                         <a
                           href="/about"
                           className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100/50 text-gray-700 hover:text-gray-900 transition-all duration-200 group cursor-pointer"

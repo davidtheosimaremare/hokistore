@@ -314,25 +314,27 @@ function LoginContent() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Full Width Background Image */}
+      {/* Full Width Background Image - Fixed for mobile */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-110 animate-ken-burns"
+        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat transform scale-110 animate-ken-burns"
         style={{
-          backgroundImage: "url('/images/asset-web/baner-2.png')"
+          backgroundImage: "url('/images/asset-web/baner-2.png')",
+          backgroundSize: 'cover',
+          backgroundAttachment: 'fixed'
         }}
       ></div>
       
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/75"></div>
+      {/* Dark overlay for better text readability - Fixed positioning */}
+      <div className="fixed inset-0 w-full h-full bg-black/75"></div>
       
-      {/* Red overlay for brand consistency */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F90020]/30 via-black/20 to-[#F90020]/40"></div>
+      {/* Red overlay for brand consistency - Fixed positioning */}
+      <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-[#F90020]/30 via-black/20 to-[#F90020]/40"></div>
       
-      {/* Additional dark gradient for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40"></div>
+      {/* Additional dark gradient for depth - Fixed positioning */}
+      <div className="fixed inset-0 w-full h-full bg-gradient-to-t from-black/60 via-transparent to-black/40"></div>
       
-      {/* Floating particles */}
-      <div className="absolute inset-0">
+      {/* Floating particles - Fixed positioning */}
+      <div className="fixed inset-0 w-full h-full pointer-events-none">
         <div className="absolute top-20 left-20 w-2 h-2 bg-[#F90020]/30 rounded-full animate-float-slow"></div>
         <div className="absolute top-40 right-32 w-1 h-1 bg-[#F90020]/40 rounded-full animate-float-medium animation-delay-1000"></div>
         <div className="absolute bottom-32 left-16 w-3 h-3 bg-[#F90020]/20 rounded-full animate-float-fast animation-delay-2000"></div>
@@ -405,27 +407,27 @@ function LoginContent() {
         </div>
 
         {/* Right side - Multi-Step Login Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-3 sm:p-4 md:p-6 lg:p-12 min-h-screen">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12 min-h-screen">
           <div className="w-full max-w-md">
             {/* Mobile logo */}
-            <div className="lg:hidden text-center mb-6 sm:mb-8">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-full shadow-2xl p-2 border-2 border-[#F90020]/30">
+            <div className="lg:hidden text-center mb-8 sm:mb-10 pt-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-full shadow-2xl p-3 border-2 border-[#F90020]/30">
                 <img
                   src="/images/asset-web/logo-fav.png"
                   alt="Hokiindo Raya"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white drop-shadow-2xl">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-2xl">
                 <span className="text-[#F90020]">Hokiindo</span> Raya
               </h1>
-              <p className="text-xs sm:text-sm text-white/90 mt-1 drop-shadow-lg">
+              <p className="text-sm sm:text-base text-white/90 mt-2 drop-shadow-lg">
                 {t.auth.siemensDistributor}
               </p>
             </div>
 
             {/* Multi-Step Login Form */}
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-[#F90020]/20 p-4 sm:p-6 md:p-8 animate-fade-in animation-delay-700">
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-[#F90020]/20 p-6 sm:p-8 md:p-10 animate-fade-in animation-delay-700 mb-8">
               <div className="text-center mb-6 sm:mb-8">
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">{t.auth.loginButton}</h2>
                 <p className="text-sm sm:text-base text-gray-600">
@@ -477,7 +479,7 @@ function LoginContent() {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 border-2 rounded-xl focus:outline-none focus:border-[#F90020] transition-all duration-200 bg-gray-50 text-gray-900 placeholder-gray-500 text-sm sm:text-base ${
+                        className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-4 sm:py-4 border-2 rounded-xl focus:outline-none focus:border-[#F90020] transition-all duration-200 bg-gray-50 text-gray-900 placeholder-gray-500 text-base touch-manipulation ${
                           errors.email ? 'border-[#F90020] bg-red-50' : 'border-gray-200 hover:border-[#F90020]/30'
                         }`}
                         placeholder={t.auth.emailPlaceholder}
@@ -526,9 +528,9 @@ function LoginContent() {
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 border-2 rounded-xl focus:outline-none focus:border-[#F90020] transition-all duration-200 bg-gray-50 text-gray-900 placeholder-gray-500 text-sm sm:text-base ${
-                          errors.password ? 'border-[#F90020] bg-red-50' : 'border-gray-200 hover:border-[#F90020]/30'
-                        }`}
+                                                    className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-4 sm:py-4 border-2 rounded-xl focus:outline-none focus:border-[#F90020] transition-all duration-200 bg-gray-50 text-gray-900 placeholder-gray-500 text-base touch-manipulation ${
+                              errors.password ? 'border-[#F90020] bg-red-50' : 'border-gray-200 hover:border-[#F90020]/30'
+                            }`}
                         placeholder={t.auth.passwordPlaceholder}
                         autoFocus
                       />
@@ -998,10 +1000,45 @@ function LoginContent() {
           animation-delay: 4s;
         }
         
-        /* Mobile viewport adjustments */
+        /* Mobile viewport adjustments and full background fix */
+        .min-h-screen {
+          min-height: 100vh;
+          min-height: 100dvh; /* Dynamic viewport height for mobile */
+        }
+        
+        /* Ensure full background coverage on all devices */
+        .fixed.inset-0 {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          height: 100dvh !important; /* Dynamic viewport height */
+        }
+        
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+          body {
+            overflow-x: hidden;
+          }
+          
+          .fixed.inset-0 {
+            background-attachment: scroll !important; /* Fixed attachment can cause issues on mobile */
+          }
+          
+          /* Ensure proper viewport handling */
+          .min-h-screen {
+            min-height: calc(100vh + env(safe-area-inset-bottom));
+            min-height: calc(100dvh + env(safe-area-inset-bottom));
+          }
+        }
+        
         @media (max-height: 700px) {
           .min-h-screen {
             min-height: 100vh;
+            min-height: 100dvh;
           }
         }
         
@@ -1016,6 +1053,36 @@ function LoginContent() {
         @media (max-height: 600px) {
           .max-h-\[60vh\] {
             max-height: 50vh;
+          }
+        }
+        
+        /* Prevent horizontal scroll */
+        html, body {
+          overflow-x: hidden;
+          width: 100%;
+        }
+        
+        /* Improve touch targets on mobile */
+        @media (max-width: 768px) {
+          button, input[type="submit"], input[type="button"] {
+            min-height: 44px; /* Apple's recommended minimum touch target */
+          }
+          
+          /* Better spacing for form elements */
+          .space-y-4 > * + * {
+            margin-top: 1.5rem; /* Increase spacing on mobile */
+          }
+          
+          /* Improve readability on small screens */
+          input, textarea, select {
+            font-size: 16px; /* Prevent zoom on iOS */
+          }
+        }
+        
+        /* Fix for iOS Safari viewport height issues */
+        @supports (-webkit-touch-callout: none) {
+          .min-h-screen {
+            min-height: -webkit-fill-available;
           }
         }
       `}</style>
